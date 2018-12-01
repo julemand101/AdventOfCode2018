@@ -1,0 +1,11 @@
+name: AdventOfCode2018
+description: Solutions for Advent of Code 2018.
+version: 0.0.1
+homepage: http://www.archlinux.dk
+author: Jacob Bang <julemand101@archlinux.dk>
+
+environment:
+  sdk: ">=2.0.0 <3.0.0"
+
+dev_dependencies:
+  test: "^1.5.1"
