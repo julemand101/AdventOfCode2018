@@ -5,7 +5,7 @@ import 'package:tuple/tuple.dart';
 
 class Claim {
   // #1 @ 1,3: 4x4
-  static final _exp = RegExp(r'.*?(\d+).*?(\d+).*?(\d+).*?(\d+).*?(\d+)');
+  static final _exp = RegExp(r'#(\d+) @ (\d+),(\d+): (\d+)x(\d+)');
 
   int id, x, y, wide, tall;
 
