@@ -102,7 +102,6 @@ linter:
   - prefer_void_to_null
   - recursive_getters
   - slash_for_doc_comments
-  - sort_constructors_first
   - sort_pub_dependencies
   - sort_unnamed_constructors_first
   - super_goes_last
