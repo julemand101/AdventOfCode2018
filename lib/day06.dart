@@ -108,7 +108,7 @@ int solveB(List<String> input, int totalDistanceLessThan) {
       }
     }
   }
-  
+
   return areaSize;
 }
 
