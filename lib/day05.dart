@@ -1,6 +1,8 @@
 // --- Day 5: Alchemical Reduction ---
 // https://adventofcode.com/2018/day/5
 
+import 'dart:math';
+
 const int toSmallLetter = 32;
 const int toBigLetter = -toSmallLetter;
 const int letterBigA = 65;
@@ -28,7 +30,7 @@ int solveB(Iterable<int> units) {
 
   for (var bigLetter = letterBigA; bigLetter <= letterBigZ; bigLetter++) {
     final size = solveA(units.where((unit) => _test(unit, bigLetter)));
-    minSize = (size < minSize) ? size : minSize;
+    minSize = min(size, minSize);
   }
 
   return minSize;
