@@ -1,7 +1,7 @@
 // --- Day 3: No Matter How You Slice It ---
 // https://adventofcode.com/2018/day/3
 
-import 'package:tuple/tuple.dart';
+import 'dart:math';
 
 class Claim {
   // #1 @ 1,3: 4x4
@@ -22,14 +22,14 @@ class Claim {
 
 int solveA(List<String> input) {
   // Key = xy coordinate, Value = number of overlap
-  final map = <Tuple2<int, int>, int>{};
+  final map = <Point<int>, int>{};
 
   for (var line in input) {
     final claim = Claim(line);
 
     for (var i = 0; i < claim.wide; i++) {
       for (var k = 0; k < claim.tall; k++) {
-        final coordinate = Tuple2(claim.x + i, claim.y + k);
+        final coordinate = Point(claim.x + i, claim.y + k);
         map.update(coordinate, (value) => value + 1, ifAbsent: () => 1);
       }
     }
@@ -40,7 +40,7 @@ int solveA(List<String> input) {
 
 int solveB(List<String> input) {
   // Key = xy coordinate, Value = ID of claim.
-  final map = <Tuple2<int, int>, int>{};
+  final map = <Point<int>, int>{};
   final notOverlappingIds = Set<int>();
 
   for (var line in input) {
@@ -51,7 +51,7 @@ int solveB(List<String> input) {
 
     for (var i = 0; i < claim.wide; i++) {
       for (var k = 0; k < claim.tall; k++) {
-        final coordinate = Tuple2(claim.x + i, claim.y + k);
+        final coordinate = Point(claim.x + i, claim.y + k);
         map.update(coordinate, (origClaimId) {
           // Remove both ID's from the notOverlappingIds list if we overlap
           notOverlappingIds..remove(origClaimId)..remove(claim.id);
