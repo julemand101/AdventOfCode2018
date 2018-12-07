@@ -10,7 +10,7 @@ class Claim {
   int id, x, y, wide, tall;
 
   Claim(String input) {
-    final matches = _exp.allMatches(input).first;
+    final matches = _exp.firstMatch(input);
 
     id = int.parse(matches.group(1));
     x = int.parse(matches.group(2));
