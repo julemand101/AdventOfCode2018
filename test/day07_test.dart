@@ -27,4 +27,13 @@ void main() {
           equals('GKPTSLUXBIJMNCADFOVHEWYQRZ'));
     });
   });
+
+  group('Part Two', () {
+    test('Example 1', () {
+      expect(solveB(example, 2, 0), equals(15));
+    });
+    test('Solution', () {
+      expect(solveB(File(dataFilePath).readAsLinesSync(), 5, 60), equals(920));
+    });
+  });
 }
