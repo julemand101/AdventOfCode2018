@@ -3,22 +3,68 @@
 
 import 'dart:math';
 
+class Marble {
+  final int value;
+
+  Marble prev;
+  Marble next;
+
+  Marble(this.value);
+
+  void addNext(Marble marble) {
+    marble
+      ..prev = this
+      ..next = next;
+
+    next.prev = marble;
+    next = marble;
+  }
+
+  void addPrev(Marble marble) {
+    marble
+      ..next = this
+      ..prev = prev;
+
+    prev.next = marble;
+    prev = marble;
+  }
+
+  int unlinkAndReturnValue() {
+    prev.next = next;
+    next.prev = prev;
+    prev = null;
+    next = null;
+    return value;
+  }
+
+  Marble getElementAt(int pos) {
+    if (pos < 0) {
+      return prev.getElementAt(pos + 1);
+    } else if (pos > 0) {
+      return next.getElementAt(pos - 1);
+    }
+    return this;
+  }
+}
+
 int solve(int numberOfPlayers, int lastMarbleWorth) {
   final playerScores = _getInitialPlayerScores(numberOfPlayers);
-  final circle = [0];
-  var currentMarblePosition = 0;
-  var currentPlayer = 0;
+
+  var currentMarble = Marble(0);
+  currentMarble
+    ..prev = currentMarble
+    ..next = currentMarble;
 
   for (var marbleWorth = 1; marbleWorth <= lastMarbleWorth; marbleWorth++) {
-    currentPlayer = _nextPlayer(currentPlayer, numberOfPlayers);
+    final currentPlayer = marbleWorth % numberOfPlayers;
 
     if (marbleWorth % 23 == 0) {
       playerScores[currentPlayer] += marbleWorth;
-      currentMarblePosition = _nextPosition(currentMarblePosition, circle, -8);
-      playerScores[currentPlayer] += circle.removeAt(currentMarblePosition);
+      currentMarble = currentMarble.getElementAt(-7);
+      playerScores[currentPlayer] += currentMarble.next.unlinkAndReturnValue();
     } else {
-      currentMarblePosition = _nextPosition(currentMarblePosition, circle);
-      circle.insert(currentMarblePosition, marbleWorth);
+      currentMarble = currentMarble.getElementAt(2)
+        ..addNext(Marble(marbleWorth));
     }
   }
 
@@ -28,15 +74,9 @@ int solve(int numberOfPlayers, int lastMarbleWorth) {
 Map<int, int> _getInitialPlayerScores(int numberOfPlayers) {
   final playerScores = <int, int>{};
 
-  for (var i = 1; i <= numberOfPlayers; i++) {
+  for (var i = 0; i < numberOfPlayers; i++) {
     playerScores[i] = 0;
   }
 
   return playerScores;
 }
-
-int _nextPlayer(int currentPlayer, int numberOfPlayers) =>
-    (currentPlayer == numberOfPlayers) ? 1 : currentPlayer + 1;
-
-int _nextPosition(int currentMarblePosition, List circle, [int skip = 1]) =>
-    ((currentMarblePosition + skip) % circle.length) + 1;

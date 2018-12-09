@@ -39,7 +39,7 @@ void main() {
   group('Part Two', () {
     test('Solution', () {
       // Elf's score be if the number of the last marble were 100 times larger?
-      // expect(solve(411, 72059 * 100), equals(429943));
+      expect(solve(411, 72059 * 100), equals(3615691746));
     });
   });
 }
