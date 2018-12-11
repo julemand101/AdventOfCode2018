@@ -3,6 +3,11 @@
 
 import 'dart:typed_data';
 
+// Grid is implemented as a summed-area table which makes it a lot more
+// efficient to get the sum of specific areas.
+//
+// For more information:
+// https://en.wikipedia.org/wiki/Summed-area_table
 class Grid {
   static const int size = 301;
   final List<int> list = Int32List(size * size);
