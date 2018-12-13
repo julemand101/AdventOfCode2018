@@ -23,7 +23,7 @@ class Rule {
   }
 }
 
-int solveA(List<String> input) {
+int solveA(List<String> input, {int generation = 20}) {
   var pots = <Pot>[];
 
   final stateString = input.first.substring('initial state: '.length);
@@ -39,7 +39,7 @@ int solveA(List<String> input) {
     }
   }
 
-  for (var i = 0; i < 20; i++) {
+  for (var i = 0; i < generation; i++) {
     // Check if we need more pots on the left side and add them
     if (pots[0].containPlant) {
       pots.insert(0, Pot(pots[0].id - 1));
@@ -82,4 +82,17 @@ int solveA(List<String> input) {
 
   // Sum of the numbers of all pots which contain a plant
   return pots.fold(0, (sum, pot) => pot.containPlant ? sum + pot.id : sum);
+}
+
+int solveB(List<String> input) {
+  // By running the simulation long enough we got to see that the difference
+  // between each run are going to be stable. In my case, this was already
+  // happen with the 100th generation.
+  //
+  // So by using that knowledge we can just calculate the 50000000000th
+  // generation instead of simulating each generation.
+  final a = solveA(input, generation: 100);
+  final b = solveA(input, generation: 101);
+
+  return a + ((50000000000 - 100) * (b - a));
 }
