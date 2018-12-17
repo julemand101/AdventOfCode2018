@@ -7,22 +7,41 @@ import 'package:AdventOfCode2018/day13.dart';
 
 const String dataFilePath = 'test/data/day13.txt';
 
-const List<String> example = [
-  r'/->-\',
-  r'|   |  /----\',
-  r'| /-+--+-\  |',
-  r'| | |  | v  |',
-  r'\-+-/  \-+--/',
-  r'  \------/'
-];
-
 void main() {
   group('Part One', () {
     test('Example 1', () {
-      expect(solveA(example), equals('7,3'));
+      expect(
+          solveA([
+            r'/->-\',
+            r'|   |  /----\',
+            r'| /-+--+-\  |',
+            r'| | |  | v  |',
+            r'\-+-/  \-+--/',
+            r'  \------/'
+          ]),
+          equals('7,3'));
     });
     test('Solution', () {
       expect(solveA(File(dataFilePath).readAsLinesSync()), equals('26,92'));
+    });
+  });
+
+  group('Part Two', () {
+    test('Example 1', () {
+      expect(
+          solveB([
+            r'/>-<\',
+            r'|   |',
+            r'| /<+-\',
+            r'| | | v',
+            r'\>+</ |',
+            r'  |   ^',
+            r'  \<->/'
+          ]),
+          equals('6,4'));
+    });
+    test('Solution', () {
+      expect(solveB(File(dataFilePath).readAsLinesSync()), equals('86,18'));
     });
   });
 }
