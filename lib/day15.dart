@@ -215,8 +215,8 @@ int solveA(List<String> input) {
 
       queue
         ..remove(point)
-        ..addAll(point.openAdjacentPoints
-            .where((p) => grid.get(p.x, p.y) == null));
+        ..addAll(
+            point.openAdjacentPoints.where((p) => grid.get(p.x, p.y) == null));
     }
 
     length++;
