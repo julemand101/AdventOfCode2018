@@ -41,7 +41,7 @@ int solveA(List<String> input) {
 int solveB(List<String> input) {
   // Key = xy coordinate, Value = ID of claim.
   final map = <Point<int>, int>{};
-  final notOverlappingIds = Set<int>();
+  final notOverlappingIds = <int>{};
 
   for (var line in input) {
     final claim = Claim(line);

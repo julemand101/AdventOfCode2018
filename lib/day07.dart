@@ -6,8 +6,8 @@ import 'dart:collection';
 class Step {
   final String id;
   final int time;
-  final Set<Step> dependencies = Set();
-  final Set<Step> stepsThereDependsOnThisStep = Set();
+  final Set<Step> dependencies = <Step>{};
+  final Set<Step> stepsThereDependsOnThisStep = <Step>{};
 
   Step(this.id) : time = id.codeUnitAt(0) - 64;
 }
