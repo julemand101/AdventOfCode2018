@@ -79,7 +79,8 @@ int solveA(List<String> input) {
 
   final validCoordinatesToSize = Map<Coordinate, int>.fromIterable(
       grid.getValidCoordinates(),
-      key: (k) => k,
+      key: (k) =>
+          (k is Coordinate) ? k : throw Exception('$k is not Coordinate'),
       value: (_) => 0);
 
   // We don't need to search the edge since all coordinates there are part of
