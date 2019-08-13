@@ -77,11 +77,8 @@ class Grid {
 int solveA(List<String> input) {
   final grid = Grid(input.map(_parseToCoordinate).toList());
 
-  final validCoordinatesToSize = Map<Coordinate, int>.fromIterable(
-      grid.getValidCoordinates(),
-      key: (k) =>
-          (k is Coordinate) ? k : throw Exception('$k is not Coordinate'),
-      value: (_) => 0);
+  final validCoordinatesToSize = Map<Coordinate, int>.fromEntries(
+      grid.getValidCoordinates().map((coordinate) => MapEntry(coordinate, 0)));
 
   // We don't need to search the edge since all coordinates there are part of
   // the edge has been removed from the list of valid coordinates
