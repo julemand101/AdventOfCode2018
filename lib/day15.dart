@@ -6,6 +6,12 @@ import 'dart:math' as math;
 // Used to mark which classes we allow to travel to when calculating route
 abstract class Destination {}
 
+//   ____       _       _
+//  |  _ \ ___ (_)_ __ | |_
+//  | |_) / _ \| | '_ \| __|
+//  |  __/ (_) | | | | | |_
+//  |_|   \___/|_|_| |_|\__|
+//
 abstract class Point {
   final Map map;
   int x, y;
@@ -37,6 +43,12 @@ abstract class Point {
   Iterable<Point> get openAdjacentPoints => adjacentPoints.whereType<Empty>();
 }
 
+//  __        __    _ _
+//  \ \      / /_ _| | |
+//   \ \ /\ / / _` | | |
+//    \ V  V / (_| | | |
+//     \_/\_/ \__,_|_|_|
+//
 class Wall extends Point {
   Wall(Map map, int x, int y) : super(map, x, y);
 
@@ -44,6 +56,12 @@ class Wall extends Point {
   String toString() => '#';
 }
 
+//   _____                 _
+//  | ____|_ __ ___  _ __ | |_ _   _
+//  |  _| | '_ ` _ \| '_ \| __| | | |
+//  | |___| | | | | | |_) | |_| |_| |
+//  |_____|_| |_| |_| .__/ \__|\__, |
+//                  |_|        |___/
 class Empty extends Point implements Destination {
   Empty(Map map, int x, int y) : super(map, x, y);
 
@@ -51,6 +69,12 @@ class Empty extends Point implements Destination {
   String toString() => '.';
 }
 
+//    ____ _                          _
+//   / ___| |__   __ _ _ __ __ _  ___| |_ ___ _ __
+//  | |   | '_ \ / _` | '__/ _` |/ __| __/ _ \ '__|
+//  | |___| | | | (_| | | | (_| | (__| |_  __/ |
+//   \____|_| |_|\__,_|_|  \__,_|\___|\__\___|_|
+//
 abstract class Character extends Point implements Destination {
   static const int attackPower = 3;
   int hp = 200;
@@ -133,6 +157,12 @@ abstract class Character extends Point implements Destination {
       (a.length > b.length) ? b : a;
 }
 
+//    ____       _     _ _
+//   / ___| ___ | |__ | (_)_ __
+//  | |  _ / _ \| '_ \| | | '_ \
+//  | |_| | (_) | |_) | | | | | |
+//   \____|\___/|_.__/|_|_|_| |_|
+//
 class Goblin extends Character {
   Goblin(Map map, int x, int y) : super(map, x, y);
 
@@ -150,6 +180,12 @@ class Goblin extends Character {
   String toString() => 'G';
 }
 
+//   _____ _  __
+//  | ____| |/ _|
+//  |  _| | | |_
+//  | |___| |  _|
+//  |_____|_|_|
+//
 class Elf extends Character {
   Elf(Map map, int x, int y) : super(map, x, y);
 
@@ -253,6 +289,12 @@ class Map {
   String toString() => grid.toString();
 }
 
+//   ____             _
+//  |  _ \ ___  _   _| |_ ___
+//  | |_) / _ \| | | | __/ _ \
+//  |  _ < (_) | |_| | |_  __/
+//  |_| \_\___/ \__,_|\__\___|
+//
 class Route {
   final Point point;
   Route prev;
