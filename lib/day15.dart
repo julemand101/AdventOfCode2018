@@ -76,10 +76,10 @@ class Empty extends Point implements Destination {
 //   \____|_| |_|\__,_|_|  \__,_|\___|\__\___|_|
 //
 abstract class Character extends Point implements Destination {
-  static const int attackPower = 3;
+  final int attackPower;
   int hp = 200;
 
-  Character(Map map, int x, int y) : super(map, x, y);
+  Character(Map map, int x, int y, this.attackPower) : super(map, x, y);
 
   void moveTo(int newX, int newY) {
     final point = map.getPoint(newX, newY);
@@ -99,7 +99,7 @@ abstract class Character extends Point implements Destination {
   }
 
   void attack(Character c) {
-    c.hp -= Character.attackPower;
+    c.hp -= attackPower;
 
     if (c.hp < 0) {
       map.setPoint(c.x, c.y, Empty(map, c.x, c.y));
@@ -164,7 +164,7 @@ abstract class Character extends Point implements Destination {
 //   \____|\___/|_.__/|_|_|_| |_|
 //
 class Goblin extends Character {
-  Goblin(Map map, int x, int y) : super(map, x, y);
+  Goblin(Map map, int x, int y) : super(map, x, y, 3);
 
   @override
   Iterable<Character> get enemies => map.grid.list.whereType<Elf>();
@@ -187,7 +187,7 @@ class Goblin extends Character {
 //  |_____|_|_|
 //
 class Elf extends Character {
-  Elf(Map map, int x, int y) : super(map, x, y);
+  Elf(Map map, int x, int y, int attackPower) : super(map, x, y, attackPower);
 
   @override
   Iterable<Character> get enemies => map.grid.list.whereType<Goblin>();
@@ -248,7 +248,7 @@ class Grid<T> {
 class Map {
   Grid<Point> grid;
 
-  Map(List<String> input) {
+  Map(List<String> input, {int elfAttackPower = 3}) {
     final length = input[0].length;
     final height = input.length;
     grid = Grid(length, height);
@@ -258,12 +258,12 @@ class Map {
       final line = input[y];
 
       for (var x = 0; x < line.length; x++) {
-        grid.set(x, y, _parse(line[x], this, x, y));
+        grid.set(x, y, _parse(line[x], this, x, y, elfAttackPower));
       }
     }
   }
 
-  static Point _parse(String char, Map map, int x, int y) {
+  static Point _parse(String char, Map map, int x, int y, int elfAttackPower) {
     switch (char) {
       case '#':
         return Wall(map, x, y);
@@ -272,7 +272,7 @@ class Map {
       case 'G':
         return Goblin(map, x, y);
       case 'E':
-        return Elf(map, x, y);
+        return Elf(map, x, y, elfAttackPower);
       default:
         throw Exception('$char are not a valid char.');
     }
