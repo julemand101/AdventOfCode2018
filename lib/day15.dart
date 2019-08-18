@@ -98,12 +98,15 @@ abstract class Character extends Point implements Destination {
     y = newY;
   }
 
-  void attack(Character c) {
+  /// Returns true if elf is killed
+  bool attack(Character c) {
     c.hp -= attackPower;
 
-    if (c.hp < 0) {
+    if (c.hp <= 0) {
       map.setPoint(c.x, c.y, Empty(map, c.x, c.y));
+      return c is Elf;
     }
+    return false;
   }
 
   bool get isAlive => hp > 0;
@@ -248,7 +251,7 @@ class Grid<T> {
 class Map {
   Grid<Point> grid;
 
-  Map(List<String> input, {int elfAttackPower = 3}) {
+  Map(List<String> input, [int elfAttackPower = 3]) {
     final length = input[0].length;
     final height = input.length;
     grid = Grid(length, height);
@@ -348,12 +351,66 @@ int solveA(List<String> input) {
         final minHp = enemies.fold<int>(
             enemies.first.hp, (minHp, enemy) => math.min(minHp, enemy.hp));
 
-        final selectedEnemy = enemies.firstWhere((enemy) => enemy.hp == minHp);
-        character.attack(selectedEnemy);
+        final enemy = enemies.firstWhere((enemy) => enemy.hp == minHp);
+        character.attack(enemy);
       }
     }
     rounds++;
   }
+
+  final survivors = (map.elvers.isEmpty) ? map.goblins : map.elvers;
+  return survivors.fold<int>(0, (sum, goblin) => sum + goblin.hp) * rounds;
+}
+
+//             _           ____
+//   ___  ___ | |_   _____| __ )
+//  / __|/ _ \| \ \ / / _ \  _ \
+//  \__ \ (_) | |\ V /  __/ |_) |
+//  |___/\___/|_| \_/ \___|____/
+//
+int solveB(List<String> input) {
+  var elfAttackPower = 3;
+  Map map;
+  int rounds;
+
+  elfPowerLoop:
+  do {
+    map = Map(input, elfAttackPower);
+    rounds = 0;
+
+    mainLoop:
+    while (map.goblins.isNotEmpty) {
+      for (var character in map.getTurnOrder().toList()) {
+        if (character.isDead) {
+          continue;
+        }
+
+        if (character.enemies.isEmpty) {
+          break mainLoop;
+        }
+
+        final nextPoint = character.getRouteToNearestEnemy()?.nextStep;
+        if (nextPoint is Empty) {
+          character.moveTo(nextPoint.x, nextPoint.y);
+        }
+
+        final enemies = character.adjacentEnemies.toList(growable: false);
+
+        if (enemies.isNotEmpty) {
+          final minHp = enemies.fold<int>(
+              enemies.first.hp, (minHp, enemy) => math.min(minHp, enemy.hp));
+
+          final enemy = enemies.firstWhere((enemy) => enemy.hp == minHp);
+          if (character.attack(enemy)) {
+            // Elf killed
+            elfAttackPower++;
+            continue elfPowerLoop;
+          }
+        }
+      }
+      rounds++;
+    }
+  } while (map.goblins.isNotEmpty);
 
   final survivors = (map.elvers.isEmpty) ? map.goblins : map.elvers;
   return survivors.fold<int>(0, (sum, goblin) => sum + goblin.hp) * rounds;
