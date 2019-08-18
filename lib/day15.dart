@@ -1,6 +1,11 @@
 // --- Day 15: Beverage Bandits ---
 // https://adventofcode.com/2018/day/15
 
+import 'dart:math' as math;
+
+// Used to mark which classes we allow to travel to when calculating route
+abstract class Destination {}
+
 abstract class Point {
   final Map map;
   int x, y;
@@ -13,11 +18,6 @@ abstract class Point {
       yield map.getPoint(x, y - 1);
     }
 
-    // Down
-    if (y + 1 < map.grid.height) {
-      yield map.getPoint(x, y + 1);
-    }
-
     // Left
     if (x - 1 >= 0) {
       yield map.getPoint(x - 1, y);
@@ -26,6 +26,11 @@ abstract class Point {
     // Right
     if (x + 1 < map.grid.length) {
       yield map.getPoint(x + 1, y);
+    }
+
+    // Down
+    if (y + 1 < map.grid.height) {
+      yield map.getPoint(x, y + 1);
     }
   }
 
@@ -39,15 +44,15 @@ class Wall extends Point {
   String toString() => '#';
 }
 
-class Empty extends Point {
+class Empty extends Point implements Destination {
   Empty(Map map, int x, int y) : super(map, x, y);
 
   @override
   String toString() => '.';
 }
 
-abstract class Character extends Point {
-  final int attackPower = 3;
+abstract class Character extends Point implements Destination {
+  static const int attackPower = 3;
   int hp = 200;
 
   Character(Map map, int x, int y) : super(map, x, y);
@@ -69,7 +74,63 @@ abstract class Character extends Point {
     y = newY;
   }
 
+  void attack(Character c) {
+    c.hp -= Character.attackPower;
+
+    if (c.hp < 0) {
+      map.setPoint(c.x, c.y, Empty(map, c.x, c.y));
+    }
+  }
+
+  bool get isAlive => hp > 0;
+  bool get isDead => !isAlive;
   Iterable<Character> get enemies;
+  Iterable<Character> get adjacentEnemies;
+
+  Route getRouteToNearestEnemy();
+
+  Route _getRouteToNearestEnemy(bool Function(Point) check) {
+    final queue = <Point, Route>{};
+
+    // Add empty spaces to route generator
+    for (var empty in map.grid.list.whereType<Destination>().cast<Point>()) {
+      queue[empty] = Route(empty);
+    }
+
+    // Set point where we want to search from
+    queue[this].length = 0;
+
+    while (queue.values.any((p) => p.length != null)) {
+      final u = queue.values
+          .where(_routeHaveLength)
+          .reduce(_findRouteWithShortestLength);
+
+      queue.remove(u.point);
+
+      if (u.point is! Character || u.length == 0) {
+        for (var v in u.point.adjacentPoints.where(queue.containsKey)) {
+          final alt = u.length + 1;
+          final route = queue[v];
+
+          if (route.length == null || alt < route.length) {
+            route
+              ..length = alt
+              ..prev = u;
+          }
+
+          if (check(v)) {
+            return route;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  static bool _routeHaveLength(Route r) => r.length != null;
+  static Route _findRouteWithShortestLength(Route a, Route b) =>
+      (a.length > b.length) ? b : a;
 }
 
 class Goblin extends Character {
@@ -77,6 +138,13 @@ class Goblin extends Character {
 
   @override
   Iterable<Character> get enemies => map.grid.list.whereType<Elf>();
+
+  @override
+  Iterable<Character> get adjacentEnemies => adjacentPoints.whereType<Elf>();
+
+  @override
+  Route getRouteToNearestEnemy() =>
+      _getRouteToNearestEnemy((point) => point is Elf);
 
   @override
   String toString() => 'G';
@@ -87,6 +155,13 @@ class Elf extends Character {
 
   @override
   Iterable<Character> get enemies => map.grid.list.whereType<Goblin>();
+
+  @override
+  Iterable<Character> get adjacentEnemies => adjacentPoints.whereType<Goblin>();
+
+  @override
+  Route getRouteToNearestEnemy() =>
+      _getRouteToNearestEnemy((point) => point is Goblin);
 
   @override
   String toString() => 'E';
@@ -104,17 +179,12 @@ class Grid<T> {
 
   Grid(this.length, this.height) : list = List(length * height);
   Grid.filled(this.length, this.height, T value)
-      : list = List(length * height) {
-    setAll(value);
-  }
+      : list = List.filled(length * height, value);
+  Grid.generate(this.length, this.height, T generate(int index))
+      : list = List.generate(length * height, generate);
 
   T get(int x, int y) => list[_getPos(x, y)];
   void set(int x, int y, T value) => list[_getPos(x, y)] = value;
-  void setAll(T value) {
-    for (var i = 0; i < list.length; i++) {
-      list[i] = value;
-    }
-  }
 
   int _getPos(int x, int y) => x + (y * length);
 
@@ -176,9 +246,32 @@ class Map {
   void setPoint(int x, int y, Point value) => grid.set(x, y, value);
 
   Iterable<Character> getTurnOrder() => grid.list.whereType<Character>();
+  Iterable<Elf> get elvers => grid.list.whereType<Elf>();
+  Iterable<Goblin> get goblins => grid.list.whereType<Goblin>();
 
   @override
   String toString() => grid.toString();
+}
+
+class Route {
+  final Point point;
+  Route prev;
+  int length;
+
+  Route(this.point);
+
+  Iterable<Route> getRoute() sync* {
+    yield this;
+
+    if (prev != null) {
+      yield* prev.getRoute();
+    }
+  }
+
+  Point get nextStep => getRoute().firstWhere((r) => r.length == 1).point;
+
+  @override
+  String toString() => (length != null) ? length.toString() : '_';
 }
 
 //             _              _
@@ -188,70 +281,38 @@ class Map {
 //  |___/\___/|_| \_/ \___/_/   \_\
 //
 int solveA(List<String> input) {
-  final test = Map(['#######', '#E..G.#', '#...#.#', '#.G.#G#', '#######']);
-  final grid = Grid<int>(test.grid.length, test.grid.height);
-  print(test);
-
-  final elf = test.getPoint(1, 1);
-
-  final queue = elf.openAdjacentPoints.toList();
-  var length = 1;
-
-  while (queue.isNotEmpty) {
-    for (var point in queue.toList()) {
-      final x = point.x;
-      final y = point.y;
-      final gridValue = grid.get(x, y);
-
-      if (gridValue == null || gridValue > length) {
-        grid.set(x, y, length);
-      }
-
-      for (var char in point.adjacentPoints.whereType<Character>()) {
-        if (char != elf && grid.get(char.x, char.y) == null) {
-          grid.set(char.x, char.y, length + 1);
-        }
-      }
-
-      queue
-        ..remove(point)
-        ..addAll(
-            point.openAdjacentPoints.where((p) => grid.get(p.x, p.y) == null));
-    }
-
-    length++;
-  }
-
-  print(grid);
-
-  return -1;
   final map = Map(input);
-  print(map);
+  var rounds = 0;
 
-  print('------------------------------');
-  input.forEach(print);
+  mainLoop:
+  while (map.elvers.isNotEmpty && map.goblins.isNotEmpty) {
+    for (var character in map.getTurnOrder().toList()) {
+      if (character.isDead) {
+        continue;
+      }
 
-  map.getTurnOrder().forEach((c) => print('$c(${c.x},${c.y})'));
-  map.getTurnOrder().first.moveTo(2, 1);
-  print(map);
+      if (character.enemies.isEmpty) {
+        break mainLoop;
+      }
 
-  final p = map.getPoint(2, 1);
+      final nextPoint = character.getRouteToNearestEnemy()?.nextStep;
+      if (nextPoint is Empty) {
+        character.moveTo(nextPoint.x, nextPoint.y);
+      }
 
-  print(p.x);
-  print(p.y);
+      final enemies = character.adjacentEnemies.toList(growable: false);
 
-  if (p is Character) {
-    p.adjacentPoints.forEach(print);
+      if (enemies.isNotEmpty) {
+        final minHp = enemies.fold<int>(
+            enemies.first.hp, (minHp, enemy) => math.min(minHp, enemy.hp));
 
-    final g = Grid.filled(map.grid.length, map.grid.height, '.');
-
-    for (var e in p.enemies) {
-      g.set(e.x, e.y, 'E');
-      for (var a in e.openAdjacentPoints) {
-        g.set(a.x, a.y, '?');
+        final selectedEnemy = enemies.firstWhere((enemy) => enemy.hp == minHp);
+        character.attack(selectedEnemy);
       }
     }
-
-    print(g);
+    rounds++;
   }
+
+  final survivors = (map.elvers.isEmpty) ? map.goblins : map.elvers;
+  return survivors.fold<int>(0, (sum, goblin) => sum + goblin.hp) * rounds;
 }

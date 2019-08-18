@@ -10,6 +10,19 @@ void main() {
       expect(
           solveA([
             '#######',
+            '#.G...#',
+            '#...EG#',
+            '#.#.#G#',
+            '#..G#E#',
+            '#.....#',
+            '#######'
+          ]),
+          equals(27730));
+    });
+    test('Example 2', () {
+      expect(
+          solveA([
+            '#######',
             '#G..#E#',
             '#E#E.E#',
             '#G.##.#',
@@ -19,7 +32,7 @@ void main() {
           ]),
           equals(36334));
     });
-    test('Example 2', () {
+    test('Example 3', () {
       expect(
           solveA([
             '#######',
@@ -32,7 +45,7 @@ void main() {
           ]),
           equals(39514));
     });
-    test('Example 3', () {
+    test('Example 4', () {
       expect(
           solveA([
             '#######',
@@ -45,7 +58,7 @@ void main() {
           ]),
           equals(27755));
     });
-    test('Example 4', () {
+    test('Example 5', () {
       expect(
           solveA([
             '#######',
@@ -58,7 +71,7 @@ void main() {
           ]),
           equals(28944));
     });
-    test('Example 5', () {
+    test('Example 6', () {
       expect(
           solveA([
             '#########',
@@ -109,7 +122,7 @@ void main() {
             '###.....###..##..###############',
             '################################',
           ]),
-          equals(-1));
+          equals(257954));
     });
-  }, skip: true);
+  });
 }
