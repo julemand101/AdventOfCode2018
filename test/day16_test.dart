@@ -18,4 +18,9 @@ void main() {
       expect(solveA(File(dataFilePath).readAsLinesSync()), equals(567));
     });
   });
+  group('Part Two', () {
+    test('Solution', () {
+      expect(solveB(File(dataFilePath).readAsLinesSync()), equals(610));
+    });
+  });
 }

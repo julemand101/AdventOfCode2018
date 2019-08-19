@@ -17,10 +17,9 @@ class Register {
 class Sample {
   List<Register> before;
   List<Register> after;
-  int op, a, b, c;
+  ProgramInstruction programInstruction;
 
   static final RegExp _before = RegExp(r'Before: \[(\d), (\d), (\d), (\d)]');
-  static final RegExp _instruction = RegExp(r'(\d) (\d) (\d) (\d)');
   static final RegExp _after = RegExp(r'After:  \[(\d), (\d), (\d), (\d)]');
 
   Sample(List<String> lines) {
@@ -35,11 +34,7 @@ class Sample {
         int.parse(beforeMatches.group(3)),
         int.parse(beforeMatches.group(4)));
 
-    final instructionMatches = _instruction.allMatches(lines[1]).first;
-    op = int.parse(instructionMatches.group(1));
-    a = int.parse(instructionMatches.group(2));
-    b = int.parse(instructionMatches.group(3));
-    c = int.parse(instructionMatches.group(4));
+    programInstruction = ProgramInstruction(lines[1]);
 
     final afterMatches = _after.allMatches(lines[2]).first;
     after = createRegisters(
@@ -47,6 +42,24 @@ class Sample {
         int.parse(afterMatches.group(2)),
         int.parse(afterMatches.group(3)),
         int.parse(afterMatches.group(4)));
+  }
+}
+
+class ProgramInstruction {
+  int op, a, b, c;
+
+  static final RegExp _instruction = RegExp(r'(\d+) (\d) (\d) (\d)');
+
+  ProgramInstruction(String line) {
+    final instructionMatches = _instruction.allMatches(line).first;
+    op = int.parse(instructionMatches.group(1));
+    a = int.parse(instructionMatches.group(2));
+    b = int.parse(instructionMatches.group(3));
+    c = int.parse(instructionMatches.group(4));
+  }
+
+  void call(List<Register> registers, Instruction instruction) {
+    instruction(registers, a, b, c);
   }
 }
 
@@ -118,7 +131,7 @@ int solveA(List<String> input) {
     for (var instruction in instructions) {
       final registers = cloneRegisters(sample.before);
 
-      instruction(registers, sample.a, sample.b, sample.c);
+      sample.programInstruction.call(registers, instruction);
 
       if (registersEqual(registers, sample.after)) {
         if (++count == 3) {
@@ -130,6 +143,66 @@ int solveA(List<String> input) {
   }
 
   return result;
+}
+
+int solveB(List<String> input) {
+  final samples = <Sample>[];
+  final programInstructions = <ProgramInstruction>[];
+
+  for (var i = 0; i < input.length; i++) {
+    final currentLine = input[i];
+
+    if (currentLine.startsWith('Before:')) {
+      samples.add(Sample(input.sublist(i, i + 3)));
+      i += 2;
+    } else if (ProgramInstruction._instruction.hasMatch(currentLine)) {
+      programInstructions.add(ProgramInstruction(currentLine));
+    }
+  }
+
+  final opCodeMap = <int, List<Instruction>>{};
+
+  for (var s in samples) {
+    opCodeMap.putIfAbsent(s.programInstruction.op, () => instructions.toList());
+  }
+
+  for (var sample in samples) {
+    final opCode = sample.programInstruction.op;
+
+    for (var instruction in opCodeMap[opCode].toList()) {
+      final registers = cloneRegisters(sample.before);
+
+      sample.programInstruction.call(registers, instruction);
+
+      if (!registersEqual(registers, sample.after)) {
+        opCodeMap[opCode].remove(instruction);
+      }
+    }
+  }
+
+  while (opCodeMap.values.any((list) => list.length != 1)) {
+    for (var opCode1 in opCodeMap.keys) {
+      if (opCodeMap[opCode1].length == 1) {
+        final instructionToDelete = opCodeMap[opCode1].first;
+
+        for (var opCode2 in opCodeMap.keys.where((k) => k != opCode1)) {
+          opCodeMap[opCode2].remove(instructionToDelete);
+        }
+      }
+    }
+  }
+
+  final opCodeToInstruction =
+      opCodeMap.map((opCode, list) => MapEntry(opCode, list.first));
+
+  final registers = createRegisters(0, 0, 0, 0);
+
+  for (var programInstruction in programInstructions) {
+    programInstruction.call(
+        registers, opCodeToInstruction[programInstruction.op]);
+  }
+
+  return registers[0].value;
 }
 
 bool registersEqual(List<Register> r1s, List<Register> r2s) {
