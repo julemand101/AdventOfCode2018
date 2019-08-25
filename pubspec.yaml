@@ -8,6 +8,7 @@ environment:
   sdk: ">=2.3.0 <3.0.0"
 
 dependencies:
+  quiver: '>=2.0.0 <3.0.0'
 
 dev_dependencies:
   test: "^1.6.3"

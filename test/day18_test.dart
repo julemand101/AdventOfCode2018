@@ -73,10 +73,15 @@ const input = [
 void main() {
   group('Part One', () {
     test('Example 1', () {
-      expect(solveA(example), equals(1147));
+      expect(solve(example, 10), equals(1147));
     });
     test('Solution', () {
-      expect(solveA(input), equals(574590));
+      expect(solve(input, 10), equals(574590));
+    });
+  });
+  group('Part Two', () {
+    test('Solution', () {
+      expect(solve(input, 1000000000), equals(183787));
     });
   });
 }

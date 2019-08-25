@@ -1,6 +1,8 @@
 // --- Day 18: Settlers of The North Pole ---
 // https://adventofcode.com/2018/day/18
 
+import 'package:quiver/core.dart';
+
 enum AcreType {
   /// .
   openGround,
@@ -103,6 +105,25 @@ class Forrest {
   }
 
   @override
+  bool operator ==(other) {
+    if (other is Forrest &&
+        length == other.length &&
+        height == other.height &&
+        list.length == other.list.length) {
+      for (var i = 0; i < 0; i++) {
+        if (list[i] != other.list[i]) {
+          return false;
+        }
+      }
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  int get hashCode => hashObjects([length, height, ...list]);
+
+  @override
   String toString() {
     final sb = StringBuffer();
 
@@ -129,12 +150,13 @@ class Forrest {
   }
 }
 
-int solveA(List<String> lines) {
+int solve(List<String> lines, int minutes) {
   var forrest = Forrest(lines);
   var nextForrest = forrest.copy();
   Forrest temp;
+  var history = <Forrest, int>{};
 
-  for (var minute = 0; minute < 10; minute++) {
+  for (var minute = 0; minute < minutes; minute++) {
     for (var y = 0; y < forrest.height; y++) {
       for (var x = 0; x < forrest.length; x++) {
         final acreType = forrest.get(x, y);
@@ -170,6 +192,21 @@ int solveA(List<String> lines) {
     temp = forrest;
     forrest = nextForrest;
     nextForrest = temp;
+
+    if (history != null) {
+      if (!history.containsKey(forrest)) {
+        history[forrest] = minute;
+      } else {
+        // We found a loop. Use it to move forward in time without simulation
+        final minutesToThisStateLastTime = history[forrest];
+        final loopValue = minute - minutesToThisStateLastTime;
+        final weStillNeed = minutes - minute;
+
+        minute = minutesToThisStateLastTime +
+            (weStillNeed / loopValue).floor() * loopValue;
+        history = null; // We don't need the history feature from now on
+      }
+    }
   }
 
   return forrest.resourceValue;
