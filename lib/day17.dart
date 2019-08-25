@@ -3,17 +3,33 @@
 
 import 'dart:math';
 
-enum GridState { clay, sand, waterSpring, movingWater, restingWater, bottom }
+enum GridState {
+  /// #
+  clay,
+
+  /// .
+  sand,
+
+  /// |
+  movingWater,
+
+  /// ~
+  restingWater,
+
+  /// ¤
+  bottom
+}
 
 class Grid {
   final int offSetX;
   final int length, height;
   final List<GridState> list;
+  final int lowestY;
 
   factory Grid(List<String> lines) {
     final regEx = RegExp(r'(x|y)=(\d*), (x|y)=(\d*)..(\d*)');
 
-    var minX = 100000, maxX = 0, maxY = 0;
+    var minX = 100000, maxX = 0, maxY = 0, lowestY = 10000;
     final points = <Point<int>>[];
 
     for (var line in lines) {
@@ -27,6 +43,7 @@ class Grid {
         for (var y = rangeFrom; y <= rangeTo; y++) {
           points.add(Point(singleCoordinate, y));
         }
+        lowestY = min(lowestY, rangeFrom);
         minX = min(minX, singleCoordinate);
         maxX = max(maxX, singleCoordinate);
         maxY = max(maxY, rangeTo);
@@ -34,6 +51,7 @@ class Grid {
         for (var x = rangeFrom; x <= rangeTo; x++) {
           points.add(Point(x, singleCoordinate));
         }
+        lowestY = min(lowestY, singleCoordinate);
         minX = min(minX, rangeFrom);
         maxX = max(maxX, rangeTo);
         maxY = max(maxY, singleCoordinate);
@@ -42,8 +60,8 @@ class Grid {
       }
     }
 
-    final grid = Grid._filled(minX - 1, maxX + 2, maxY + 2, GridState.sand)
-      ..set(500, 0, GridState.waterSpring);
+    final grid =
+        Grid._filled(minX - 1, maxX + 2, maxY + 2, lowestY, GridState.sand);
 
     for (var point in points) {
       grid.set(point.x, point.y, GridState.clay);
@@ -56,7 +74,8 @@ class Grid {
     return grid;
   }
 
-  Grid._filled(this.offSetX, int length, this.height, GridState value)
+  Grid._filled(
+      this.offSetX, int length, this.height, this.lowestY, GridState value)
       : list = List.filled((length - offSetX) * height, value),
         length = length - offSetX;
 
@@ -78,9 +97,6 @@ class Grid {
           case GridState.sand:
             sb.write('.');
             break;
-          case GridState.waterSpring:
-            sb.write('+');
-            break;
           case GridState.movingWater:
             sb.write('|');
             break;
@@ -99,9 +115,121 @@ class Grid {
   }
 }
 
-int solveA(List<String> lines) {
+Grid simulateWaterFlow(List<String> lines) {
   final grid = Grid(lines);
-  print(grid);
+  final waterSprings = [const Point(500, 0)];
 
-  return 0;
+  while (waterSprings.isNotEmpty) {
+    final startPoint = waterSprings.removeAt(0);
+    final x = startPoint.x;
+    var y = startPoint.y;
+
+    do {
+      grid.set(x, y++, GridState.movingWater);
+    } while (grid.get(x, y) == GridState.sand);
+    y--; // Go one step up since we are at clay level
+
+    // Check if we hit bottom
+    if (grid.get(x, y + 1) == GridState.bottom ||
+        grid.get(x, y + 1) == GridState.movingWater) {
+      continue;
+    }
+
+    if (!wallsOnBothSides(grid, x, y)) {
+      if (grid.get(x + 1, y) == GridState.sand) {
+        waterSprings.add(Point(x + 1, y));
+      }
+      if (grid.get(x - 1, y) == GridState.sand) {
+        waterSprings.add(Point(x - 1, y));
+      }
+      continue;
+    }
+
+    while (wallsOnBothSides(grid, x, y)) {
+      // Fill left
+      for (var x1 = x; grid.get(x1, y) != GridState.clay; x1--) {
+        grid.set(x1, y, GridState.restingWater);
+      }
+
+      // Fill right
+      for (var x1 = x; grid.get(x1, y) != GridState.clay; x1++) {
+        grid.set(x1, y, GridState.restingWater);
+      }
+      y--;
+    }
+
+    // Insert new water springs
+    // Left
+    for (var x1 = x; grid.get(x1, y) != GridState.clay; x1--) {
+      grid.set(x1, y, GridState.movingWater);
+
+      if (grid.get(x1, y + 1) == GridState.sand) {
+        final point = Point(x1, y);
+        if (!waterSprings.contains(point)) {
+          waterSprings.add(point);
+        }
+        break;
+      }
+    }
+
+    // Right
+    for (var x1 = x; grid.get(x1, y) != GridState.clay; x1++) {
+      grid.set(x1, y, GridState.movingWater);
+
+      if (grid.get(x1, y + 1) == GridState.sand) {
+        final point = Point(x1, y);
+        if (!waterSprings.contains(point)) {
+          waterSprings.add(point);
+        }
+        break;
+      }
+    }
+  }
+
+  return grid;
+}
+
+int solveA(List<String> lines) {
+  final grid = simulateWaterFlow(lines);
+
+  return grid.list
+          .where((block) =>
+              block == GridState.restingWater || block == GridState.movingWater)
+          .length -
+      grid.lowestY; // Don't count the starting water spring
+}
+
+int solveB(List<String> lines) {
+  final grid = simulateWaterFlow(lines);
+  return grid.list.where((block) => block == GridState.restingWater).length;
+}
+
+bool wallsOnBothSides(Grid grid, int startX, int startY) {
+  // Check left
+  var x = startX;
+  var y = startY;
+
+  while (grid.get(x, y) != GridState.clay &&
+      (grid.get(x, y + 1) == GridState.clay ||
+          grid.get(x, y + 1) == GridState.restingWater)) {
+    x--;
+  }
+
+  if (grid.get(x, y) == GridState.clay) {
+    // Check right
+    x = startX;
+    y = startY;
+
+    while (grid.get(x, y) != GridState.clay &&
+        (grid.get(x, y + 1) == GridState.clay ||
+            grid.get(x, y + 1) == GridState.restingWater)) {
+      x++;
+    }
+
+    if (grid.get(x, y) == GridState.clay) {
+      return true;
+    }
+  }
+
+  return false;
 }
