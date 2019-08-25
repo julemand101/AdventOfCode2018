@@ -46,8 +46,6 @@ class Forrest {
   Forrest copy() => Forrest._(length, height, list.toList(growable: false));
 
   AcreType get(int x, int y) {
-    final pos = _getPos(x, y);
-
     if ((x >= 0 && x < length) && (y >= 0 && y < height)) {
       return list[_getPos(x, y)];
     } else {
@@ -105,7 +103,7 @@ class Forrest {
   }
 
   @override
-  bool operator ==(other) {
+  bool operator ==(Object other) {
     if (other is Forrest &&
         length == other.length &&
         height == other.height &&
