@@ -61,7 +61,7 @@ void main() {
       expect(solveA(example), equals(7));
     });
     test('Solution', () {
-      expect(solveA(input), equals(-1));
-    }, skip: true);
+      expect(solveA(input), equals(984));
+    });
   });
 }

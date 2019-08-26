@@ -82,8 +82,9 @@ int solveA(List<String> lines) {
   }
 
   while (ip.value >= 0 && ip.value < codeLines.length) {
-    codeLines[ip.value++].call(registers);
+    codeLines[ip.value].call(registers);
+    ip.value++; // Update value after call since call can update the value
   }
 
-  return ip.value;
+  return registers[0].value;
 }
