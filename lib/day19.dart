@@ -61,10 +61,9 @@ class CodeLine {
   String toString() => '$instructionName $a $b $c';
 }
 
-int solveA(List<String> lines) {
+int solve(List<String> lines, List<Register> registers, {bool example}) {
   final regEx = RegExp(r'(\w{4}) (\d+) (\d+) (\d+)');
   final codeLines = <CodeLine>[];
-  final registers = List.generate(6, (_) => Register(0));
   Register ip;
 
   for (var line in lines) {
@@ -81,10 +80,30 @@ int solveA(List<String> lines) {
     }
   }
 
-  while (ip.value >= 0 && ip.value < codeLines.length) {
+  // Stop program after initial load of registers
+  while (ip.value >= 0 &&
+      ip.value < codeLines.length &&
+      (example || ip.value != 1)) {
     codeLines[ip.value].call(registers);
     ip.value++; // Update value after call since call can update the value
   }
 
+  if (!example) {
+    // Find all divisors of number in registers[1] and combine them into [0].
+    registers[0].value = 0;
+    for (var i = 1; i <= registers[1].value; ++i) {
+      if (registers[1].value % i == 0) {
+        registers[0].value += i;
+      }
+    }
+  }
+
   return registers[0].value;
 }
+
+int solveA(List<String> lines, {bool example = false}) =>
+    solve(lines, List.generate(6, (_) => Register(0)), example: example);
+
+int solveB(List<String> lines) =>
+    solve(lines, List.generate(6, (_) => Register(0))..[0].value = 1,
+        example: false);

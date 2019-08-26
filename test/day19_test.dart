@@ -58,10 +58,15 @@ const input = [
 void main() {
   group('Part One', () {
     test('Example 1', () {
-      expect(solveA(example), equals(7));
+      expect(solveA(example, example: true), equals(7));
     });
     test('Solution', () {
       expect(solveA(input), equals(984));
+    });
+  });
+  group('Part Two', () {
+    test('Solution', () {
+      expect(solveB(input), equals(10982400));
     });
   });
 }
