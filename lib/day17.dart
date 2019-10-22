@@ -32,7 +32,7 @@ class Grid {
     var minX = 100000, maxX = 0, maxY = 0, lowestY = 10000;
     final points = <Point<int>>[];
 
-    for (var line in lines) {
+    for (final line in lines) {
       final match = regEx.firstMatch(line);
       final singleLetter = match.group(1); // x or y
       final singleCoordinate = int.parse(match.group(2));
@@ -63,7 +63,7 @@ class Grid {
     final grid =
         Grid._filled(minX - 1, maxX + 2, maxY + 2, lowestY, GridState.sand);
 
-    for (var point in points) {
+    for (final point in points) {
       grid.set(point.x, point.y, GridState.clay);
     }
 

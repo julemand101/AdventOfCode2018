@@ -60,7 +60,7 @@ int solveB(List<String> input) {
 
   // Scan each possible minute
   for (var i = 0; i < 60; i++) {
-    for (var guard in guards) {
+    for (final guard in guards) {
       final howOftenTheGuardSleepOnThisMinute = guard.sleepMap[i] ?? 0;
 
       if (howOftenTheGuardSleepOnThisMinute > maxSleep) {
@@ -82,7 +82,7 @@ Iterable<Guard> _parseInput(List<String> input) {
   final guardMap = <int, Guard>{};
   Guard currentGuard;
 
-  for (var line in sortedInput) {
+  for (final line in sortedInput) {
     if (line.contains('Guard')) {
       final id = int.parse(exp.firstMatch(line).group(1));
       currentGuard = guardMap.putIfAbsent(id, () => Guard(id));

@@ -27,7 +27,7 @@ class Node {
     } else {
       var sum = 0;
 
-      for (var position in metadata) {
+      for (final position in metadata) {
         if (position > 0 && position <= childNodes.length) {
           sum += childNodes[position - 1].value;
         }

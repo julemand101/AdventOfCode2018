@@ -11,7 +11,7 @@ const int letterBigZ = 90;
 int solveA(Iterable<int> units) {
   final polymer = <int>[];
 
-  for (var unit in units) {
+  for (final unit in units) {
     if (polymer.isNotEmpty && _isReacting(polymer.last, unit)) {
       polymer.removeLast();
     } else {

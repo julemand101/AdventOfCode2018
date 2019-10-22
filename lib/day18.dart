@@ -91,7 +91,7 @@ class Forrest {
   int get resourceValue {
     var trees = 0, lumberyards = 0;
 
-    for (var acre in list) {
+    for (final acre in list) {
       if (acre == AcreType.trees) {
         trees++;
       } else if (acre == AcreType.lumberyard) {
@@ -119,7 +119,7 @@ class Forrest {
   }
 
   @override
-  int get hashCode => hashObjects([length, height, ...list]);
+  int get hashCode => hashObjects(<Object>[length, height, ...list]);
 
   @override
   String toString() {

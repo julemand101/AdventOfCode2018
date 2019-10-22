@@ -28,7 +28,7 @@ int solveB(List<int> input) {
     final digits = _getDigits(memory[elf1] + memory[elf2]);
     var digitUsed = 0;
 
-    for (var digit in digits) {
+    for (final digit in digits) {
       if (digit == input[equalCount]) {
         digitUsed++;
         if (++equalCount == input.length) {

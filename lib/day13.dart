@@ -177,7 +177,7 @@ String solveA(List<String> input) {
       }
     });
 
-    for (var cart in carts) {
+    for (final cart in carts) {
       cart.tick(map);
       if (carts
           .where((otherCart) => !identical(cart, otherCart))
@@ -205,12 +205,12 @@ String solveB(List<String> input) {
       }
     });
 
-    final cartsToBeRemoved = [];
+    final cartsToBeRemoved = <Cart>[];
 
-    for (var cart in carts) {
+    for (final cart in carts) {
       cart.tick(map);
 
-      for (var otherCart in carts.where((c) => !identical(cart, c))) {
+      for (final otherCart in carts.where((c) => !identical(cart, c))) {
         if (cart.isColliding(otherCart)) {
           cartsToBeRemoved..add(cart)..add(otherCart);
         }

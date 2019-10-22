@@ -120,7 +120,7 @@ abstract class Character extends Point implements Destination {
     final queue = <Point, Route>{};
 
     // Add empty spaces to route generator
-    for (var empty in map.grid.list.whereType<Destination>().cast<Point>()) {
+    for (final empty in map.grid.list.whereType<Destination>().cast<Point>()) {
       queue[empty] = Route(empty);
     }
 
@@ -135,7 +135,7 @@ abstract class Character extends Point implements Destination {
       queue.remove(u.point);
 
       if (u.point is! Character || u.length == 0) {
-        for (var v in u.point.adjacentPoints.where(queue.containsKey)) {
+        for (final v in u.point.adjacentPoints.where(queue.containsKey)) {
           final alt = u.length + 1;
           final route = queue[v];
 
@@ -219,7 +219,7 @@ class Grid<T> {
   Grid(this.length, this.height) : list = List(length * height);
   Grid.filled(this.length, this.height, T value)
       : list = List.filled(length * height, value);
-  Grid.generate(this.length, this.height, T generate(int index))
+  Grid.generate(this.length, this.height, T Function(int) generate)
       : list = List.generate(length * height, generate);
 
   T get(int x, int y) => list[_getPos(x, y)];
@@ -331,7 +331,7 @@ int solveA(List<String> input) {
 
   mainLoop:
   while (map.elvers.isNotEmpty && map.goblins.isNotEmpty) {
-    for (var character in map.getTurnOrder().toList()) {
+    for (final character in map.getTurnOrder().toList()) {
       if (character.isDead) {
         continue;
       }
@@ -380,7 +380,7 @@ int solveB(List<String> input) {
 
     mainLoop:
     while (map.goblins.isNotEmpty) {
-      for (var character in map.getTurnOrder().toList()) {
+      for (final character in map.getTurnOrder().toList()) {
         if (character.isDead) {
           continue;
         }

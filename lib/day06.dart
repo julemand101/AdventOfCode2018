@@ -19,7 +19,7 @@ class Grid {
   int minY = 0;
 
   Grid(this.coordinates) {
-    for (var coordinate in coordinates) {
+    for (final coordinate in coordinates) {
       maxX = max(coordinate.x, maxX);
       minX = min(coordinate.x, minX);
 
@@ -32,7 +32,7 @@ class Grid {
     Coordinate closestCoordinate;
     int minDistance;
 
-    for (var coordinate in coordinates) {
+    for (final coordinate in coordinates) {
       final distance = coordinate.manhattanDistanceByCoordinate(x, y);
 
       if (minDistance == null) {

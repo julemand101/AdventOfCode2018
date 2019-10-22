@@ -66,7 +66,7 @@ int solve(List<String> lines, List<Register> registers, {bool example}) {
   final codeLines = <CodeLine>[];
   Register ip;
 
-  for (var line in lines) {
+  for (final line in lines) {
     if (line.startsWith('#')) {
       ip = registers[int.parse(line.split(' ')[1])];
     } else {

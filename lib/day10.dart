@@ -58,7 +58,7 @@ PuzzleAnswer solve(List<String> input) {
     minX = maxX;
     minY = maxY;
 
-    for (var point in points) {
+    for (final point in points) {
       final x = point.getX(time);
       final y = point.getY(time);
 
@@ -74,7 +74,7 @@ PuzzleAnswer solve(List<String> input) {
 
   final grid = _build2dGrid(prevHeight, prevLength, ' ');
 
-  for (var point in points) {
+  for (final point in points) {
     // Convert each coordinate so 0 are the smallest value for both x and y
     final x = point.getX(prevTime) + (prevMinX * -1);
     final y = point.getY(prevTime) + (prevMinY * -1);
@@ -84,7 +84,7 @@ PuzzleAnswer solve(List<String> input) {
 
   final sb = StringBuffer();
 
-  for (var line in grid) {
+  for (final line in grid) {
     line.forEach(sb.write);
     sb.writeln();
   }

@@ -125,10 +125,10 @@ int solveA(List<String> input) {
 
   var result = 0;
 
-  for (var sample in samples) {
+  for (final sample in samples) {
     var count = 0;
 
-    for (var instruction in instructions) {
+    for (final instruction in instructions) {
       final registers = cloneRegisters(sample.before);
 
       sample.programInstruction.call(registers, instruction);
@@ -162,14 +162,14 @@ int solveB(List<String> input) {
 
   final opCodeMap = <int, List<Instruction>>{};
 
-  for (var s in samples) {
+  for (final s in samples) {
     opCodeMap.putIfAbsent(s.programInstruction.op, () => instructions.toList());
   }
 
-  for (var sample in samples) {
+  for (final sample in samples) {
     final opCode = sample.programInstruction.op;
 
-    for (var instruction in opCodeMap[opCode].toList()) {
+    for (final instruction in opCodeMap[opCode].toList()) {
       final registers = cloneRegisters(sample.before);
 
       sample.programInstruction.call(registers, instruction);
@@ -181,11 +181,11 @@ int solveB(List<String> input) {
   }
 
   while (opCodeMap.values.any((list) => list.length != 1)) {
-    for (var opCode1 in opCodeMap.keys) {
+    for (final opCode1 in opCodeMap.keys) {
       if (opCodeMap[opCode1].length == 1) {
         final instructionToDelete = opCodeMap[opCode1].first;
 
-        for (var opCode2 in opCodeMap.keys.where((k) => k != opCode1)) {
+        for (final opCode2 in opCodeMap.keys.where((k) => k != opCode1)) {
           opCodeMap[opCode2].remove(instructionToDelete);
         }
       }
@@ -197,7 +197,7 @@ int solveB(List<String> input) {
 
   final registers = createRegisters(0, 0, 0, 0);
 
-  for (var programInstruction in programInstructions) {
+  for (final programInstruction in programInstructions) {
     programInstruction.call(
         registers, opCodeToInstruction[programInstruction.op]);
   }
@@ -214,8 +214,8 @@ bool registersEqual(List<Register> r1s, List<Register> r2s) {
   return true;
 }
 
-List<Register> createRegisters(int a, int b, int c, int d) =>
-    List.unmodifiable([Register(a), Register(b), Register(c), Register(d)]);
+List<Register> createRegisters(int a, int b, int c, int d) => List.unmodifiable(
+    <Register>[Register(a), Register(b), Register(c), Register(d)]);
 
 List<Register> cloneRegisters(List<Register> registers) =>
-    List.unmodifiable(registers.map((register) => register.clone()));
+    List.unmodifiable(registers.map<Register>((register) => register.clone()));

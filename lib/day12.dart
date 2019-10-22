@@ -32,7 +32,7 @@ int solveA(List<String> input, {int generation = 20}) {
   }
 
   final rules = <Rule>[];
-  for (var line in input.skip(2)) {
+  for (final line in input.skip(2)) {
     if (line.endsWith('#')) {
       final pattern = line.split(' => ')[0].codeUnits.map((c) => c == 35);
       rules.add(Rule(pattern.toList(growable: false)));
@@ -68,7 +68,7 @@ int solveA(List<String> input, {int generation = 20}) {
       final potsToMatch = pots.sublist(i - 2, i + 3);
 
       var containPlant = false;
-      for (var rule in rules) {
+      for (final rule in rules) {
         if (rule.match(potsToMatch)) {
           containPlant = true;
           break;

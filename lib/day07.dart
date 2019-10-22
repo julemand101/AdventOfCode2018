@@ -26,7 +26,8 @@ class Worker {
 
   bool tickForwardAndCheckIfDone() {
     if (step != null && --time == 0) {
-      for (var stepThereDependsOnThisStep in step.stepsThereDependsOnThisStep) {
+      for (final stepThereDependsOnThisStep
+          in step.stepsThereDependsOnThisStep) {
         stepThereDependsOnThisStep.dependencies.remove(step);
       }
 
@@ -44,7 +45,7 @@ String solveA(List<String> input) {
   while (steps.isNotEmpty) {
     final currentStep = steps.where((step) => step.dependencies.isEmpty).first;
 
-    for (var step in currentStep.stepsThereDependsOnThisStep) {
+    for (final step in currentStep.stepsThereDependsOnThisStep) {
       step.dependencies.remove(currentStep);
     }
 
@@ -68,7 +69,7 @@ int solveB(List<String> input, int workers, int extraTimeForWork) {
     final currentSteps =
         steps.where((step) => step.dependencies.isEmpty).toList();
 
-    for (var step in currentSteps) {
+    for (final step in currentSteps) {
       if (idleWorkers.isNotEmpty) {
         idleWorkers.removeLast().addStep(step);
         steps.remove(step);
@@ -94,7 +95,7 @@ List<Step> _getSteps(List<String> input) {
   // Ensure the keys are sorted alphabetical
   final cache = SplayTreeMap<String, Step>();
 
-  for (var line in input) {
+  for (final line in input) {
     final matches = _exp.firstMatch(line);
     final aId = matches.group(1);
     final bId = matches.group(2);
