@@ -3,7 +3,7 @@
 
 import 'dart:io';
 import 'package:test/test.dart';
-import 'package:AdventOfCode2018/day07.dart';
+import 'package:advent_of_code_2018/day07.dart';
 
 const String dataFilePath = 'test/data/day07.txt';
 

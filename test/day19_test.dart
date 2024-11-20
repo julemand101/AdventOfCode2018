@@ -2,7 +2,7 @@
 // https://adventofcode.com/2018/day/19
 
 import 'package:test/test.dart';
-import 'package:AdventOfCode2018/day19.dart';
+import 'package:advent_of_code_2018/day19.dart';
 
 const example = [
   '#ip 0',

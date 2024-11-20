@@ -2,7 +2,7 @@
 // https://adventofcode.com/2018/day/15
 
 import 'package:test/test.dart';
-import 'package:AdventOfCode2018/day15.dart';
+import 'package:advent_of_code_2018/day15.dart';
 
 const input = [
   '################################',

@@ -4,7 +4,7 @@
 import 'dart:math';
 
 class Coordinate extends Point<int> {
-  const Coordinate(int x, int y) : super(x, y);
+  const Coordinate(super.x, super.y);
 
   int manhattanDistanceByCoordinate(int x, int y) =>
       (this.x - x).abs() + (this.y - y).abs();
