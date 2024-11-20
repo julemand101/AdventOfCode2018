@@ -6,8 +6,8 @@ import 'dart:math';
 class Marble {
   final int value;
 
-  Marble prev;
-  Marble next;
+  Marble? prev;
+  Marble? next;
 
   Marble(this.value);
 
@@ -16,7 +16,7 @@ class Marble {
       ..prev = this
       ..next = next;
 
-    next.prev = marble;
+    next!.prev = marble;
     next = marble;
   }
 
@@ -25,13 +25,13 @@ class Marble {
       ..next = this
       ..prev = prev;
 
-    prev.next = marble;
+    prev!.next = marble;
     prev = marble;
   }
 
   int unlinkAndReturnValue() {
-    prev.next = next;
-    next.prev = prev;
+    prev!.next = next;
+    next!.prev = prev;
     prev = null;
     next = null;
     return value;
@@ -39,9 +39,9 @@ class Marble {
 
   Marble getElementAt(int pos) {
     if (pos < 0) {
-      return prev.getElementAt(pos + 1);
+      return prev!.getElementAt(pos + 1);
     } else if (pos > 0) {
-      return next.getElementAt(pos - 1);
+      return next!.getElementAt(pos - 1);
     }
     return this;
   }
@@ -59,9 +59,10 @@ int solve(int numberOfPlayers, int lastMarbleWorth) {
     final currentPlayer = marbleWorth % numberOfPlayers;
 
     if (marbleWorth % 23 == 0) {
-      playerScores[currentPlayer] += marbleWorth;
+      playerScores.update(currentPlayer, (score) => score + marbleWorth);
       currentMarble = currentMarble.getElementAt(-7);
-      playerScores[currentPlayer] += currentMarble.next.unlinkAndReturnValue();
+      playerScores.update(currentPlayer,
+          (score) => score + currentMarble.next!.unlinkAndReturnValue());
     } else {
       currentMarble = currentMarble.getElementAt(2)
         ..addNext(Marble(marbleWorth));

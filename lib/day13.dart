@@ -2,6 +2,7 @@
 // https://adventofcode.com/2018/day/13
 
 enum Direction { up, down, left, right }
+
 enum TurnDirection { left, straight, right }
 
 class Cart {
@@ -165,8 +166,7 @@ String solveA(List<String> input) {
   final map = input.toList(growable: false);
   final carts = Cart.getCartsFromMap(map);
 
-  const runForeverUntilCollision = true;
-  while (runForeverUntilCollision) {
+  while (true) {
     carts.sort((a, b) {
       final compareY = a.y.compareTo(b.y);
 
@@ -186,8 +186,6 @@ String solveA(List<String> input) {
       }
     }
   }
-
-  return null;
 }
 
 String solveB(List<String> input) {
@@ -212,7 +210,9 @@ String solveB(List<String> input) {
 
       for (final otherCart in carts.where((c) => !identical(cart, c))) {
         if (cart.isColliding(otherCart)) {
-          cartsToBeRemoved..add(cart)..add(otherCart);
+          cartsToBeRemoved
+            ..add(cart)
+            ..add(otherCart);
         }
       }
     }

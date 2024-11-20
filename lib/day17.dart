@@ -27,17 +27,17 @@ class Grid {
   final int lowestY;
 
   factory Grid(List<String> lines) {
-    final regEx = RegExp(r'(x|y)=(\d*), (x|y)=(\d*)..(\d*)');
+    final regEx = RegExp(r'([xy])=(\d*), ([xy])=(\d*)..(\d*)');
 
     var minX = 100000, maxX = 0, maxY = 0, lowestY = 10000;
     final points = <Point<int>>[];
 
     for (final line in lines) {
-      final match = regEx.firstMatch(line);
-      final singleLetter = match.group(1); // x or y
-      final singleCoordinate = int.parse(match.group(2));
-      final rangeFrom = int.parse(match.group(4));
-      final rangeTo = int.parse(match.group(5));
+      final match = regEx.firstMatch(line)!;
+      final singleLetter = match.group(1)!; // x or y
+      final singleCoordinate = int.parse(match.group(2)!);
+      final rangeFrom = int.parse(match.group(4)!);
+      final rangeTo = int.parse(match.group(5)!);
 
       if (singleLetter == 'x') {
         for (var y = rangeFrom; y <= rangeTo; y++) {

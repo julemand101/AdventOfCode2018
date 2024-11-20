@@ -1,8 +1,6 @@
 // --- Day 18: Settlers of The North Pole ---
 // https://adventofcode.com/2018/day/18
 
-import 'package:quiver/core.dart';
-
 enum AcreType {
   /// .
   openGround,
@@ -16,12 +14,12 @@ enum AcreType {
 
 class Forrest {
   final int length, height;
-  final List<AcreType> list;
+  final List<AcreType?> list;
 
   Forrest(List<String> lines)
       : length = lines[0].length,
         height = lines.length,
-        list = List(lines[0].length * lines.length) {
+        list = List.filled(lines[0].length * lines.length, null) {
     for (var y = 0; y < lines.length; y++) {
       for (var x = 0; x < lines[y].length; x++) {
         set(x, y, _parse(lines[y][x]));
@@ -47,7 +45,7 @@ class Forrest {
 
   AcreType get(int x, int y) {
     if ((x >= 0 && x < length) && (y >= 0 && y < height)) {
-      return list[_getPos(x, y)];
+      return list[_getPos(x, y)]!;
     } else {
       return AcreType.openGround;
     }
@@ -119,7 +117,7 @@ class Forrest {
   }
 
   @override
-  int get hashCode => hashObjects(<Object>[length, height, ...list]);
+  int get hashCode => Object.hashAll([length, height, ...list]);
 
   @override
   String toString() {
@@ -152,7 +150,7 @@ int solve(List<String> lines, int minutes) {
   var forrest = Forrest(lines);
   var nextForrest = forrest.copy();
   Forrest temp;
-  var history = <Forrest, int>{};
+  Map<Forrest, int>? history = <Forrest, int>{};
 
   for (var minute = 0; minute < minutes; minute++) {
     for (var y = 0; y < forrest.height; y++) {
@@ -196,7 +194,7 @@ int solve(List<String> lines, int minutes) {
         history[forrest] = minute;
       } else {
         // We found a loop. Use it to move forward in time without simulation
-        final minutesToThisStateLastTime = history[forrest];
+        final minutesToThisStateLastTime = history[forrest]!;
         final loopValue = minute - minutesToThisStateLastTime;
         final weStillNeed = minutes - minute;
 

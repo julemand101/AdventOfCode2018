@@ -28,9 +28,9 @@ class Grid {
     }
   }
 
-  Coordinate closestPoint(int x, int y) {
-    Coordinate closestCoordinate;
-    int minDistance;
+  Coordinate? closestPoint(int x, int y) {
+    Coordinate? closestCoordinate;
+    int? minDistance;
 
     for (final coordinate in coordinates) {
       final distance = coordinate.manhattanDistanceByCoordinate(x, y);
@@ -84,10 +84,9 @@ int solveA(List<String> input) {
   // the edge has been removed from the list of valid coordinates
   for (var x = grid.minX + 1; x < grid.maxX; x++) {
     for (var y = grid.minY + 1; y < grid.maxY; y++) {
-      final coordinate = grid.closestPoint(x, y);
-
-      if (validCoordinatesToSize.containsKey(coordinate)) {
-        validCoordinatesToSize[coordinate]++;
+      if (grid.closestPoint(x, y) case final coordinate?
+          when validCoordinatesToSize.containsKey(coordinate)) {
+        validCoordinatesToSize.update(coordinate, (i) => i + 1);
       }
     }
   }

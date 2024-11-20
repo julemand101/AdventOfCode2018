@@ -18,7 +18,7 @@ abstract class Point {
 
   Point(this.map, this.x, this.y);
 
-  Iterable<Point> get adjacentPoints sync* {
+  Iterable<Point?> get adjacentPoints sync* {
     // Up
     if (y - 1 >= 0) {
       yield map.getPoint(x, y - 1);
@@ -50,7 +50,7 @@ abstract class Point {
 //     \_/\_/ \__,_|_|_|
 //
 class Wall extends Point {
-  Wall(Map map, int x, int y) : super(map, x, y);
+  Wall(super.map, super.x, super.y);
 
   @override
   String toString() => '#';
@@ -63,7 +63,7 @@ class Wall extends Point {
 //  |_____|_| |_| |_| .__/ \__|\__, |
 //                  |_|        |___/
 class Empty extends Point implements Destination {
-  Empty(Map map, int x, int y) : super(map, x, y);
+  Empty(super.map, super.x, super.y);
 
   @override
   String toString() => '.';
@@ -79,7 +79,7 @@ abstract class Character extends Point implements Destination {
   final int attackPower;
   int hp = 200;
 
-  Character(Map map, int x, int y, this.attackPower) : super(map, x, y);
+  Character(super.map, super.x, super.y, this.attackPower);
 
   void moveTo(int newX, int newY) {
     final point = map.getPoint(newX, newY);
@@ -92,7 +92,9 @@ abstract class Character extends Point implements Destination {
       ..x = x
       ..y = y;
 
-    map..setPoint(x, y, point)..setPoint(newX, newY, this);
+    map
+      ..setPoint(x, y, point)
+      ..setPoint(newX, newY, this);
 
     x = newX;
     y = newY;
@@ -114,9 +116,9 @@ abstract class Character extends Point implements Destination {
   Iterable<Character> get enemies;
   Iterable<Character> get adjacentEnemies;
 
-  Route getRouteToNearestEnemy();
+  Route? getRouteToNearestEnemy();
 
-  Route _getRouteToNearestEnemy(bool Function(Point) check) {
+  Route? _getRouteToNearestEnemy(bool Function(Point?) check) {
     final queue = <Point, Route>{};
 
     // Add empty spaces to route generator
@@ -125,7 +127,7 @@ abstract class Character extends Point implements Destination {
     }
 
     // Set point where we want to search from
-    queue[this].length = 0;
+    queue[this]!.length = 0;
 
     while (queue.values.any((p) => p.length != null)) {
       final u = queue.values
@@ -136,10 +138,10 @@ abstract class Character extends Point implements Destination {
 
       if (u.point is! Character || u.length == 0) {
         for (final v in u.point.adjacentPoints.where(queue.containsKey)) {
-          final alt = u.length + 1;
-          final route = queue[v];
+          final alt = u.length! + 1;
+          final route = queue[v]!;
 
-          if (route.length == null || alt < route.length) {
+          if (route.length == null || alt < route.length!) {
             route
               ..length = alt
               ..prev = u;
@@ -157,7 +159,7 @@ abstract class Character extends Point implements Destination {
 
   static bool _routeHaveLength(Route r) => r.length != null;
   static Route _findRouteWithShortestLength(Route a, Route b) =>
-      (a.length > b.length) ? b : a;
+      (a.length! > b.length!) ? b : a;
 }
 
 //    ____       _     _ _
@@ -176,7 +178,7 @@ class Goblin extends Character {
   Iterable<Character> get adjacentEnemies => adjacentPoints.whereType<Elf>();
 
   @override
-  Route getRouteToNearestEnemy() =>
+  Route? getRouteToNearestEnemy() =>
       _getRouteToNearestEnemy((point) => point is Elf);
 
   @override
@@ -190,7 +192,7 @@ class Goblin extends Character {
 //  |_____|_|_|
 //
 class Elf extends Character {
-  Elf(Map map, int x, int y, int attackPower) : super(map, x, y, attackPower);
+  Elf(super.map, super.x, super.y, super.attackPower);
 
   @override
   Iterable<Character> get enemies => map.grid.list.whereType<Goblin>();
@@ -199,7 +201,7 @@ class Elf extends Character {
   Iterable<Character> get adjacentEnemies => adjacentPoints.whereType<Goblin>();
 
   @override
-  Route getRouteToNearestEnemy() =>
+  Route? getRouteToNearestEnemy() =>
       _getRouteToNearestEnemy((point) => point is Goblin);
 
   @override
@@ -216,7 +218,6 @@ class Grid<T> {
   final int length, height;
   final List<T> list;
 
-  Grid(this.length, this.height) : list = List(length * height);
   Grid.filled(this.length, this.height, T value)
       : list = List.filled(length * height, value);
   Grid.generate(this.length, this.height, T Function(int) generate)
@@ -249,12 +250,12 @@ class Grid<T> {
 //  |_|  |_|\__,_| .__/
 //               |_|
 class Map {
-  Grid<Point> grid;
+  late Grid<Point?> grid;
 
   Map(List<String> input, [int elfAttackPower = 3]) {
     final length = input[0].length;
     final height = input.length;
-    grid = Grid(length, height);
+    grid = Grid.filled(length, height, null);
 
     // Parse
     for (var y = 0; y < height; y++) {
@@ -281,7 +282,7 @@ class Map {
     }
   }
 
-  Point getPoint(int x, int y) => grid.get(x, y);
+  Point? getPoint(int x, int y) => grid.get(x, y);
   void setPoint(int x, int y, Point value) => grid.set(x, y, value);
 
   Iterable<Character> getTurnOrder() => grid.list.whereType<Character>();
@@ -300,15 +301,15 @@ class Map {
 //
 class Route {
   final Point point;
-  Route prev;
-  int length;
+  Route? prev;
+  int? length;
 
   Route(this.point);
 
   Iterable<Route> getRoute() sync* {
     yield this;
 
-    if (prev != null) {
+    if (prev case final prev?) {
       yield* prev.getRoute();
     }
   }

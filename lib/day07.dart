@@ -15,7 +15,7 @@ class Step {
 class Worker {
   final int extraTimeForWork;
   int time = 0;
-  Step step;
+  Step? step;
 
   Worker(this.extraTimeForWork);
 
@@ -25,13 +25,13 @@ class Worker {
   }
 
   bool tickForwardAndCheckIfDone() {
-    if (step != null && --time == 0) {
+    if (step case final step? when --time == 0) {
       for (final stepThereDependsOnThisStep
           in step.stepsThereDependsOnThisStep) {
         stepThereDependsOnThisStep.dependencies.remove(step);
       }
 
-      step = null;
+      this.step = null;
     }
 
     return step == null && time == 0;
@@ -96,9 +96,9 @@ List<Step> _getSteps(List<String> input) {
   final cache = SplayTreeMap<String, Step>();
 
   for (final line in input) {
-    final matches = _exp.firstMatch(line);
-    final aId = matches.group(1);
-    final bId = matches.group(2);
+    final matches = _exp.firstMatch(line)!;
+    final aId = matches.group(1)!;
+    final bId = matches.group(2)!;
 
     final aStep = cache.putIfAbsent(aId, () => Step(aId));
     final bStep = cache.putIfAbsent(bId, () => Step(bId));

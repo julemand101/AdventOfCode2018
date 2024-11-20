@@ -49,11 +49,7 @@ class CodeLine {
   final int a, b, c;
 
   CodeLine(this.instructionName, this.a, this.b, this.c)
-      : instruction = instructions[instructionName] {
-    if (instruction == null) {
-      throw Exception('Could not find implementation of $instructionName');
-    }
-  }
+      : instruction = instructions[instructionName]!;
 
   void call(List<Register> r) => instruction(r, a, b, c);
 
@@ -61,20 +57,21 @@ class CodeLine {
   String toString() => '$instructionName $a $b $c';
 }
 
-int solve(List<String> lines, List<Register> registers, {bool example}) {
+int solve(List<String> lines, List<Register> registers,
+    {required bool example}) {
   final regEx = RegExp(r'(\w{4}) (\d+) (\d+) (\d+)');
   final codeLines = <CodeLine>[];
-  Register ip;
+  late Register ip;
 
   for (final line in lines) {
     if (line.startsWith('#')) {
       ip = registers[int.parse(line.split(' ')[1])];
     } else {
-      final parsed = regEx.firstMatch(line);
-      final instructionName = parsed.group(1);
-      final a = int.parse(parsed.group(2));
-      final b = int.parse(parsed.group(3));
-      final c = int.parse(parsed.group(4));
+      final parsed = regEx.firstMatch(line)!;
+      final instructionName = parsed.group(1)!;
+      final a = int.parse(parsed.group(2)!);
+      final b = int.parse(parsed.group(3)!);
+      final c = int.parse(parsed.group(4)!);
 
       codeLines.add(CodeLine(instructionName, a, b, c));
     }

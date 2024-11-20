@@ -15,12 +15,12 @@ class Register {
 }
 
 class Sample {
-  List<Register> before;
-  List<Register> after;
-  ProgramInstruction programInstruction;
+  late List<Register> before;
+  late List<Register> after;
+  late ProgramInstruction programInstruction;
 
   static final RegExp _before = RegExp(r'Before: \[(\d), (\d), (\d), (\d)]');
-  static final RegExp _after = RegExp(r'After:  \[(\d), (\d), (\d), (\d)]');
+  static final RegExp _after = RegExp(r'After: {2}\[(\d), (\d), (\d), (\d)]');
 
   Sample(List<String> lines) {
     if (lines.length != 3) {
@@ -29,33 +29,33 @@ class Sample {
 
     final beforeMatches = _before.allMatches(lines[0]).first;
     before = createRegisters(
-        int.parse(beforeMatches.group(1)),
-        int.parse(beforeMatches.group(2)),
-        int.parse(beforeMatches.group(3)),
-        int.parse(beforeMatches.group(4)));
+        int.parse(beforeMatches.group(1)!),
+        int.parse(beforeMatches.group(2)!),
+        int.parse(beforeMatches.group(3)!),
+        int.parse(beforeMatches.group(4)!));
 
     programInstruction = ProgramInstruction(lines[1]);
 
     final afterMatches = _after.allMatches(lines[2]).first;
     after = createRegisters(
-        int.parse(afterMatches.group(1)),
-        int.parse(afterMatches.group(2)),
-        int.parse(afterMatches.group(3)),
-        int.parse(afterMatches.group(4)));
+        int.parse(afterMatches.group(1)!),
+        int.parse(afterMatches.group(2)!),
+        int.parse(afterMatches.group(3)!),
+        int.parse(afterMatches.group(4)!));
   }
 }
 
 class ProgramInstruction {
-  int op, a, b, c;
+  late int op, a, b, c;
 
   static final RegExp _instruction = RegExp(r'(\d+) (\d) (\d) (\d)');
 
   ProgramInstruction(String line) {
     final instructionMatches = _instruction.allMatches(line).first;
-    op = int.parse(instructionMatches.group(1));
-    a = int.parse(instructionMatches.group(2));
-    b = int.parse(instructionMatches.group(3));
-    c = int.parse(instructionMatches.group(4));
+    op = int.parse(instructionMatches.group(1)!);
+    a = int.parse(instructionMatches.group(2)!);
+    b = int.parse(instructionMatches.group(3)!);
+    c = int.parse(instructionMatches.group(4)!);
   }
 
   void call(List<Register> registers, Instruction instruction) {
@@ -169,24 +169,24 @@ int solveB(List<String> input) {
   for (final sample in samples) {
     final opCode = sample.programInstruction.op;
 
-    for (final instruction in opCodeMap[opCode].toList()) {
+    for (final instruction in opCodeMap[opCode]!.toList()) {
       final registers = cloneRegisters(sample.before);
 
       sample.programInstruction.call(registers, instruction);
 
       if (!registersEqual(registers, sample.after)) {
-        opCodeMap[opCode].remove(instruction);
+        opCodeMap[opCode]!.remove(instruction);
       }
     }
   }
 
   while (opCodeMap.values.any((list) => list.length != 1)) {
     for (final opCode1 in opCodeMap.keys) {
-      if (opCodeMap[opCode1].length == 1) {
-        final instructionToDelete = opCodeMap[opCode1].first;
+      if (opCodeMap[opCode1]!.length == 1) {
+        final instructionToDelete = opCodeMap[opCode1]!.first;
 
         for (final opCode2 in opCodeMap.keys.where((k) => k != opCode1)) {
-          opCodeMap[opCode2].remove(instructionToDelete);
+          opCodeMap[opCode2]!.remove(instructionToDelete);
         }
       }
     }
@@ -199,7 +199,7 @@ int solveB(List<String> input) {
 
   for (final programInstruction in programInstructions) {
     programInstruction.call(
-        registers, opCodeToInstruction[programInstruction.op]);
+        registers, opCodeToInstruction[programInstruction.op]!);
   }
 
   return registers[0].value;

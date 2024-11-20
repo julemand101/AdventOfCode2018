@@ -9,7 +9,7 @@ class Guard {
 
   Guard(this.id);
 
-  DateTime _startSleepTime;
+  DateTime? _startSleepTime;
 
   void beginSleep(DateTime time) {
     if (_startSleepTime == null) {
@@ -20,7 +20,7 @@ class Guard {
   }
 
   void endSleep(DateTime endSleepTime) {
-    for (var i = _startSleepTime.minute; i < endSleepTime.minute; i++) {
+    for (var i = _startSleepTime!.minute; i < endSleepTime.minute; i++) {
       sleepMap.update(i, (i) => i + 1, ifAbsent: () => 1);
     }
     _startSleepTime = null;
@@ -54,7 +54,7 @@ int solveA(List<String> input) {
 int solveB(List<String> input) {
   final guards = _parseInput(input);
 
-  Guard maxGuard;
+  late Guard maxGuard;
   var maxSleep = 0;
   var maxMinute = 0;
 
@@ -80,11 +80,11 @@ Iterable<Guard> _parseInput(List<String> input) {
 
   final exp = RegExp(r'#([0-9]+)');
   final guardMap = <int, Guard>{};
-  Guard currentGuard;
+  late Guard currentGuard;
 
   for (final line in sortedInput) {
     if (line.contains('Guard')) {
-      final id = int.parse(exp.firstMatch(line).group(1));
+      final id = int.parse(exp.firstMatch(line)!.group(1)!);
       currentGuard = guardMap.putIfAbsent(id, () => Guard(id));
     } else if (line.endsWith('falls asleep')) {
       currentGuard.beginSleep(_getTime(line));

@@ -9,14 +9,24 @@ class Claim {
 
   int id, x, y, wide, tall;
 
-  Claim(String input) {
-    final matches = _exp.firstMatch(input);
+  Claim._({
+    required this.id,
+    required this.x,
+    required this.y,
+    required this.wide,
+    required this.tall,
+  });
 
-    id = int.parse(matches.group(1));
-    x = int.parse(matches.group(2));
-    y = int.parse(matches.group(3));
-    wide = int.parse(matches.group(4));
-    tall = int.parse(matches.group(5));
+  factory Claim(String input) {
+    final matches = _exp.firstMatch(input)!;
+
+    return Claim._(
+      id: int.parse(matches.group(1)!),
+      x: int.parse(matches.group(2)!),
+      y: int.parse(matches.group(3)!),
+      wide: int.parse(matches.group(4)!),
+      tall: int.parse(matches.group(5)!),
+    );
   }
 }
 
@@ -54,7 +64,9 @@ int solveB(List<String> input) {
         final coordinate = Point(claim.x + i, claim.y + k);
         map.update(coordinate, (origClaimId) {
           // Remove both ID's from the notOverlappingIds list if we overlap
-          notOverlappingIds..remove(origClaimId)..remove(claim.id);
+          notOverlappingIds
+            ..remove(origClaimId)
+            ..remove(claim.id);
           return origClaimId;
         }, ifAbsent: () => claim.id);
       }
