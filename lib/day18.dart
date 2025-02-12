@@ -9,7 +9,7 @@ enum AcreType {
   trees,
 
   /// #
-  lumberyard
+  lumberyard,
 }
 
 class Forrest {
@@ -17,9 +17,9 @@ class Forrest {
   final List<AcreType?> list;
 
   Forrest(List<String> lines)
-      : length = lines[0].length,
-        height = lines.length,
-        list = List.filled(lines[0].length * lines.length, null) {
+    : length = lines[0].length,
+      height = lines.length,
+      list = List.filled(lines[0].length * lines.length, null) {
     for (var y = 0; y < lines.length; y++) {
       for (var x = 0; x < lines[y].length; x++) {
         set(x, y, _parse(lines[y][x]));
@@ -159,26 +159,29 @@ int solve(List<String> lines, int minutes) {
 
         if (acreType == AcreType.openGround) {
           nextForrest.set(
-              x,
-              y,
-              (forrest.countAcreTypeAround(x, y, AcreType.trees) >= 3)
-                  ? AcreType.trees
-                  : AcreType.openGround);
+            x,
+            y,
+            (forrest.countAcreTypeAround(x, y, AcreType.trees) >= 3)
+                ? AcreType.trees
+                : AcreType.openGround,
+          );
         } else if (acreType == AcreType.trees) {
           nextForrest.set(
-              x,
-              y,
-              (forrest.countAcreTypeAround(x, y, AcreType.lumberyard) >= 3)
-                  ? AcreType.lumberyard
-                  : AcreType.trees);
+            x,
+            y,
+            (forrest.countAcreTypeAround(x, y, AcreType.lumberyard) >= 3)
+                ? AcreType.lumberyard
+                : AcreType.trees,
+          );
         } else if (acreType == AcreType.lumberyard) {
           nextForrest.set(
-              x,
-              y,
-              (forrest.countAcreTypeAround(x, y, AcreType.lumberyard) >= 1 &&
-                      forrest.countAcreTypeAround(x, y, AcreType.trees) >= 1)
-                  ? AcreType.lumberyard
-                  : AcreType.openGround);
+            x,
+            y,
+            (forrest.countAcreTypeAround(x, y, AcreType.lumberyard) >= 1 &&
+                    forrest.countAcreTypeAround(x, y, AcreType.trees) >= 1)
+                ? AcreType.lumberyard
+                : AcreType.openGround,
+          );
         } else {
           throw Exception('Should never happen!');
         }
@@ -198,7 +201,8 @@ int solve(List<String> lines, int minutes) {
         final loopValue = minute - minutesToThisStateLastTime;
         final weStillNeed = minutes - minute;
 
-        minute = minutesToThisStateLastTime +
+        minute =
+            minutesToThisStateLastTime +
             (weStillNeed / loopValue).floor() * loopValue;
         history = null; // We don't need the history feature from now on
       }

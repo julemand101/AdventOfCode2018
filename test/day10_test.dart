@@ -38,13 +38,15 @@ const List<String> example = [
   'position=<-6,  0> velocity=< 2,  0>',
   'position=< 5,  9> velocity=< 1, -2>',
   'position=<14,  7> velocity=<-2,  0>',
-  'position=<-3,  6> velocity=< 2, -1>'
+  'position=<-3,  6> velocity=< 2, -1>',
 ];
 
 void main() {
   group('Part One', () {
     test('Example 1', () {
-      expect(solve(example).message, equals('''
+      expect(
+        solve(example).message,
+        equals('''
 #   #  ###
 #   #   # 
 #   #   # 
@@ -53,10 +55,13 @@ void main() {
 #   #   # 
 #   #   # 
 #   #  ###
-'''));
+'''),
+      );
     });
     test('Solution', () {
-      expect(solve(File(dataFilePath).readAsLinesSync()).message, equals('''
+      expect(
+        solve(File(dataFilePath).readAsLinesSync()).message,
+        equals('''
    ###  #       #####   ######  ######     ###  #####   #    #
     #   #       #    #       #  #           #   #    #  #    #
     #   #       #    #       #  #           #   #    #  #    #
@@ -67,7 +72,8 @@ void main() {
 #   #   #       #       #       #       #   #   #   #   #    #
 #   #   #       #       #       #       #   #   #    #  #    #
  ###    ######  #       ######  #        ###    #    #  #    #
-'''));
+'''),
+      );
     });
   });
 
@@ -77,7 +83,9 @@ void main() {
     });
     test('Solution', () {
       expect(
-          solve(File(dataFilePath).readAsLinesSync()).seconds, equals(10595));
+        solve(File(dataFilePath).readAsLinesSync()).seconds,
+        equals(10595),
+      );
     });
   });
 }

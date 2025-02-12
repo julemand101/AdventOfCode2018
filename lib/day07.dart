@@ -79,9 +79,10 @@ int solveB(List<String> input, int workers, int extraTimeForWork) {
     }
 
     // Check if any workers are done and get a list of idle workers
-    idleWorkers = allWorkers
-        .where((worker) => worker.tickForwardAndCheckIfDone())
-        .toList();
+    idleWorkers =
+        allWorkers
+            .where((worker) => worker.tickForwardAndCheckIfDone())
+            .toList();
 
     time++;
   }

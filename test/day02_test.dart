@@ -11,16 +11,17 @@ void main() {
   group('Part One', () {
     test('Example 1', () {
       expect(
-          solveA([
-            'abcdef',
-            'bababc',
-            'abbcde',
-            'abcccd',
-            'aabcdd',
-            'abcdee',
-            'ababab'
-          ]),
-          equals(12));
+        solveA([
+          'abcdef',
+          'bababc',
+          'abbcde',
+          'abcccd',
+          'aabcdd',
+          'abcdee',
+          'ababab',
+        ]),
+        equals(12),
+      );
     });
     test('Solution', () {
       expect(solveA(File(dataFilePath).readAsLinesSync()), equals(8118));
@@ -30,13 +31,15 @@ void main() {
   group('Part Two', () {
     test('Example 1', () {
       expect(
-          solveB(
-              ['abcde', 'fghij', 'klmno', 'pqrst', 'fguij', 'axcye', 'wvxyz']),
-          equals('fgij'));
+        solveB(['abcde', 'fghij', 'klmno', 'pqrst', 'fguij', 'axcye', 'wvxyz']),
+        equals('fgij'),
+      );
     });
     test('Solution', () {
-      expect(solveB(File(dataFilePath).readAsLinesSync()),
-          equals('jbbenqtlaxhivmwyscjukztdp'));
+      expect(
+        solveB(File(dataFilePath).readAsLinesSync()),
+        equals('jbbenqtlaxhivmwyscjukztdp'),
+      );
     });
   });
 }

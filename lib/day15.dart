@@ -219,9 +219,9 @@ class Grid<T> {
   final List<T> list;
 
   Grid.filled(this.length, this.height, T value)
-      : list = List.filled(length * height, value);
+    : list = List.filled(length * height, value);
   Grid.generate(this.length, this.height, T Function(int) generate)
-      : list = List.generate(length * height, generate);
+    : list = List.generate(length * height, generate);
 
   T get(int x, int y) => list[_getPos(x, y)];
   void set(int x, int y, T value) => list[_getPos(x, y)] = value;
@@ -350,7 +350,9 @@ int solveA(List<String> input) {
 
       if (enemies.isNotEmpty) {
         final minHp = enemies.fold<int>(
-            enemies.first.hp, (minHp, enemy) => math.min(minHp, enemy.hp));
+          enemies.first.hp,
+          (minHp, enemy) => math.min(minHp, enemy.hp),
+        );
 
         final enemy = enemies.firstWhere((enemy) => enemy.hp == minHp);
         character.attack(enemy);
@@ -399,7 +401,9 @@ int solveB(List<String> input) {
 
         if (enemies.isNotEmpty) {
           final minHp = enemies.fold<int>(
-              enemies.first.hp, (minHp, enemy) => math.min(minHp, enemy.hp));
+            enemies.first.hp,
+            (minHp, enemy) => math.min(minHp, enemy.hp),
+          );
 
           final enemy = enemies.firstWhere((enemy) => enemy.hp == minHp);
           if (character.attack(enemy)) {

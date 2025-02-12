@@ -49,7 +49,7 @@ class CodeLine {
   final int a, b, c;
 
   CodeLine(this.instructionName, this.a, this.b, this.c)
-      : instruction = instructions[instructionName]!;
+    : instruction = instructions[instructionName]!;
 
   void call(List<Register> r) => instruction(r, a, b, c);
 
@@ -57,8 +57,11 @@ class CodeLine {
   String toString() => '$instructionName $a $b $c';
 }
 
-int solve(List<String> lines, List<Register> registers,
-    {required bool example}) {
+int solve(
+  List<String> lines,
+  List<Register> registers, {
+  required bool example,
+}) {
   final regEx = RegExp(r'(\w{4}) (\d+) (\d+) (\d+)');
   final codeLines = <CodeLine>[];
   late Register ip;
@@ -101,6 +104,8 @@ int solve(List<String> lines, List<Register> registers,
 int solveA(List<String> lines, {bool example = false}) =>
     solve(lines, List.generate(6, (_) => Register(0)), example: example);
 
-int solveB(List<String> lines) =>
-    solve(lines, List.generate(6, (_) => Register(0))..[0].value = 1,
-        example: false);
+int solveB(List<String> lines) => solve(
+  lines,
+  List.generate(6, (_) => Register(0))..[0].value = 1,
+  example: false,
+);

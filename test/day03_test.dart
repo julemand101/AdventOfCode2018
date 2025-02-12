@@ -10,7 +10,7 @@ const String dataFilePath = 'test/data/day03.txt';
 const List<String> example = [
   '#1 @ 1,3: 4x4',
   '#2 @ 3,1: 4x4',
-  '#3 @ 5,5: 2x2'
+  '#3 @ 5,5: 2x2',
 ];
 
 void main() {

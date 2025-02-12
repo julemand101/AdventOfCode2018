@@ -17,13 +17,13 @@ void main() {
 
     test('Solution', () {
       expect(
-          solveA(File(dataFilePath)
-              .readAsLinesSync()
-              .first
-              .split(' ')
-              .map(int.parse)
-              .toList()),
-          equals(42146));
+        solveA(
+          File(
+            dataFilePath,
+          ).readAsLinesSync().first.split(' ').map(int.parse).toList(),
+        ),
+        equals(42146),
+      );
     });
   });
 
@@ -34,13 +34,13 @@ void main() {
 
     test('Solution', () {
       expect(
-          solveB(File(dataFilePath)
-              .readAsLinesSync()
-              .first
-              .split(' ')
-              .map(int.parse)
-              .toList()),
-          equals(26753));
+        solveB(
+          File(
+            dataFilePath,
+          ).readAsLinesSync().first.split(' ').map(int.parse).toList(),
+        ),
+        equals(26753),
+      );
     });
   });
 }

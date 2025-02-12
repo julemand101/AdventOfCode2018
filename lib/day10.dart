@@ -9,8 +9,10 @@ class Point {
   final int _velocityX;
   final int _velocityY;
 
-  static final _exp = RegExp(r'position=<([- ]?\d*), ([- ]?\d*)> '
-      r'velocity=<([- ]?\d*), ([- ]?\d*)>');
+  static final _exp = RegExp(
+    r'position=<([- ]?\d*), ([- ]?\d*)> '
+    r'velocity=<([- ]?\d*), ([- ]?\d*)>',
+  );
 
   const Point(this._x, this._y, this._velocityX, this._velocityY);
 

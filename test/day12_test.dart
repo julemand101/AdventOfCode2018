@@ -23,7 +23,7 @@ const List<String> example = [
   '##.## => #',
   '###.. => #',
   '###.# => #',
-  '####. => #'
+  '####. => #',
 ];
 
 void main() {
@@ -39,7 +39,9 @@ void main() {
   group('Part Two', () {
     test('Solution', () {
       expect(
-          solveB(File(dataFilePath).readAsLinesSync()), equals(2000000001684));
+        solveB(File(dataFilePath).readAsLinesSync()),
+        equals(2000000001684),
+      );
     });
   });
 }

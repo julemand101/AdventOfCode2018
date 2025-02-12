@@ -11,15 +11,16 @@ void main() {
   group('Part One', () {
     test('Example 1', () {
       expect(
-          solveA([
-            r'/->-\',
-            r'|   |  /----\',
-            r'| /-+--+-\  |',
-            r'| | |  | v  |',
-            r'\-+-/  \-+--/',
-            r'  \------/'
-          ]),
-          equals('7,3'));
+        solveA([
+          r'/->-\',
+          r'|   |  /----\',
+          r'| /-+--+-\  |',
+          r'| | |  | v  |',
+          r'\-+-/  \-+--/',
+          r'  \------/',
+        ]),
+        equals('7,3'),
+      );
     });
     test('Solution', () {
       expect(solveA(File(dataFilePath).readAsLinesSync()), equals('26,92'));
@@ -29,16 +30,17 @@ void main() {
   group('Part Two', () {
     test('Example 1', () {
       expect(
-          solveB([
-            r'/>-<\',
-            r'|   |',
-            r'| /<+-\',
-            r'| | | v',
-            r'\>+</ |',
-            r'  |   ^',
-            r'  \<->/'
-          ]),
-          equals('6,4'));
+        solveB([
+          r'/>-<\',
+          r'|   |',
+          r'| /<+-\',
+          r'| | | v',
+          r'\>+</ |',
+          r'  |   ^',
+          r'  \<->/',
+        ]),
+        equals('6,4'),
+      );
     });
     test('Solution', () {
       expect(solveB(File(dataFilePath).readAsLinesSync()), equals('86,18'));

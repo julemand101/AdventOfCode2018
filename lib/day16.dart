@@ -1,8 +1,8 @@
 // --- Day 16: Chronal Classification ---
 // https://adventofcode.com/2018/day/16
 
-typedef Instruction = void Function(
-    List<Register> registers, int a, int b, int c);
+typedef Instruction =
+    void Function(List<Register> registers, int a, int b, int c);
 
 class Register {
   int value;
@@ -29,19 +29,21 @@ class Sample {
 
     final beforeMatches = _before.allMatches(lines[0]).first;
     before = createRegisters(
-        int.parse(beforeMatches.group(1)!),
-        int.parse(beforeMatches.group(2)!),
-        int.parse(beforeMatches.group(3)!),
-        int.parse(beforeMatches.group(4)!));
+      int.parse(beforeMatches.group(1)!),
+      int.parse(beforeMatches.group(2)!),
+      int.parse(beforeMatches.group(3)!),
+      int.parse(beforeMatches.group(4)!),
+    );
 
     programInstruction = ProgramInstruction(lines[1]);
 
     final afterMatches = _after.allMatches(lines[2]).first;
     after = createRegisters(
-        int.parse(afterMatches.group(1)!),
-        int.parse(afterMatches.group(2)!),
-        int.parse(afterMatches.group(3)!),
-        int.parse(afterMatches.group(4)!));
+      int.parse(afterMatches.group(1)!),
+      int.parse(afterMatches.group(2)!),
+      int.parse(afterMatches.group(3)!),
+      int.parse(afterMatches.group(4)!),
+    );
   }
 }
 
@@ -192,14 +194,17 @@ int solveB(List<String> input) {
     }
   }
 
-  final opCodeToInstruction =
-      opCodeMap.map((opCode, list) => MapEntry(opCode, list.first));
+  final opCodeToInstruction = opCodeMap.map(
+    (opCode, list) => MapEntry(opCode, list.first),
+  );
 
   final registers = createRegisters(0, 0, 0, 0);
 
   for (final programInstruction in programInstructions) {
     programInstruction.call(
-        registers, opCodeToInstruction[programInstruction.op]!);
+      registers,
+      opCodeToInstruction[programInstruction.op]!,
+    );
   }
 
   return registers[0].value;
@@ -215,7 +220,8 @@ bool registersEqual(List<Register> r1s, List<Register> r2s) {
 }
 
 List<Register> createRegisters(int a, int b, int c, int d) => List.unmodifiable(
-    <Register>[Register(a), Register(b), Register(c), Register(d)]);
+  <Register>[Register(a), Register(b), Register(c), Register(d)],
+);
 
 List<Register> cloneRegisters(List<Register> registers) =>
     List.unmodifiable(registers.map<Register>((register) => register.clone()));

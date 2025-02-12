@@ -51,7 +51,9 @@ class Grid {
   }
 
   int getDistanceSum(int x, int y) => coordinates.fold(
-      0, (prev, element) => prev + element.manhattanDistanceByCoordinate(x, y));
+    0,
+    (prev, element) => prev + element.manhattanDistanceByCoordinate(x, y),
+  );
 
   // Get all coordinates which does not reach the edge of the grid since these
   // coordinates are going to expand into infinity
@@ -78,7 +80,8 @@ int solveA(List<String> input) {
   final grid = Grid(input.map(_parseToCoordinate).toList());
 
   final validCoordinatesToSize = Map<Coordinate, int>.fromEntries(
-      grid.getValidCoordinates().map((coordinate) => MapEntry(coordinate, 0)));
+    grid.getValidCoordinates().map((coordinate) => MapEntry(coordinate, 0)),
+  );
 
   // We don't need to search the edge since all coordinates there are part of
   // the edge has been removed from the list of valid coordinates

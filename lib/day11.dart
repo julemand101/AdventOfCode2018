@@ -15,7 +15,8 @@ class Grid {
   Grid(int gridSerialNumber) {
     for (var y = 1; y < size; y++) {
       for (var x = 1; x < size; x++) {
-        list[x + (y * size)] = getPowerLevel(x, y, gridSerialNumber) +
+        list[x + (y * size)] =
+            getPowerLevel(x, y, gridSerialNumber) +
             get(x, y - 1) +
             get(x - 1, y) -
             get(x - 1, y - 1);

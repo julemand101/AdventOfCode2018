@@ -61,8 +61,10 @@ int solve(int numberOfPlayers, int lastMarbleWorth) {
     if (marbleWorth % 23 == 0) {
       playerScores.update(currentPlayer, (score) => score + marbleWorth);
       currentMarble = currentMarble.getElementAt(-7);
-      playerScores.update(currentPlayer,
-          (score) => score + currentMarble.next!.unlinkAndReturnValue());
+      playerScores.update(
+        currentPlayer,
+        (score) => score + currentMarble.next!.unlinkAndReturnValue(),
+      );
     } else {
       currentMarble = currentMarble.getElementAt(2)
         ..addNext(Marble(marbleWorth));

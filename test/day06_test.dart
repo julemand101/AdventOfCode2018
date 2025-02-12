@@ -25,7 +25,9 @@ void main() {
     });
     test('Solution', () {
       expect(
-          solveB(File(dataFilePath).readAsLinesSync(), 10000), equals(48978));
+        solveB(File(dataFilePath).readAsLinesSync(), 10000),
+        equals(48978),
+      );
     });
   });
 }

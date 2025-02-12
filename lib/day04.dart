@@ -45,8 +45,9 @@ class Guard {
 
 int solveA(List<String> input) {
   final guards = _parseInput(input);
-  final mostSleepyGuard =
-      guards.reduce((g1, g2) => g1.sleepSum > g2.sleepSum ? g1 : g2);
+  final mostSleepyGuard = guards.reduce(
+    (g1, g2) => g1.sleepSum > g2.sleepSum ? g1 : g2,
+  );
 
   return mostSleepyGuard.id * mostSleepyGuard.mostSleepyMinute;
 }

@@ -17,7 +17,7 @@ enum GridState {
   restingWater,
 
   /// ¤
-  bottom
+  bottom,
 }
 
 class Grid {
@@ -60,8 +60,13 @@ class Grid {
       }
     }
 
-    final grid =
-        Grid._filled(minX - 1, maxX + 2, maxY + 2, lowestY, GridState.sand);
+    final grid = Grid._filled(
+      minX - 1,
+      maxX + 2,
+      maxY + 2,
+      lowestY,
+      GridState.sand,
+    );
 
     for (final point in points) {
       grid.set(point.x, point.y, GridState.clay);
@@ -75,9 +80,13 @@ class Grid {
   }
 
   Grid._filled(
-      this.offSetX, int length, this.height, this.lowestY, GridState value)
-      : list = List.filled((length - offSetX) * height, value),
-        length = length - offSetX;
+    this.offSetX,
+    int length,
+    this.height,
+    this.lowestY,
+    GridState value,
+  ) : list = List.filled((length - offSetX) * height, value),
+      length = length - offSetX;
 
   GridState get(int x, int y) => list[_getPos(x, y)];
   void set(int x, int y, GridState value) => list[_getPos(x, y)] = value;
@@ -193,8 +202,11 @@ int solveA(List<String> lines) {
   final grid = simulateWaterFlow(lines);
 
   return grid.list
-          .where((block) =>
-              block == GridState.restingWater || block == GridState.movingWater)
+          .where(
+            (block) =>
+                block == GridState.restingWater ||
+                block == GridState.movingWater,
+          )
           .length -
       grid.lowestY; // Don't count the starting water spring
 }
